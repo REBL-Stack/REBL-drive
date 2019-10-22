@@ -6,11 +6,11 @@ function renameFile (userSession, path, rename) {
   // Migrate to react-blockstack but as part of hook? and update filelist?
   userSession.getFile(path)
   .then( content => userSession.putFile(rename, content)
-                    .then(() => userSession.deleteFile(path) )
+                    .then(() => userSession.deleteFile(path) ))
 }
 
 function useFavorites () {
-  const [value, setvalue] = useFile(".favorites")
+  const [value, setValue] = useFile(".favorites")
   const favorites = value && JSON.parse(value)
   const toggleFavorite = (path) => {
     const entry = {}
@@ -111,11 +111,11 @@ function Files ( props ) {
     </>)
 }
 
-export default function Profile (props) {
+export default function Main (props) {
   const { person } = props
   return (
-    <section id="section-2">
+    <main>
       <Files/>
-    </section>
+    </main>
   )
 }
