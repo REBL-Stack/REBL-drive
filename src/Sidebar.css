@@ -4,18 +4,19 @@
     display: flex;
     width: 100%;
     align-items: stretch;
-    margin-left: 2em;
-    margin-right: 5em;
+    height: 100vh;
 }
 
 #sidebar {
   position: sticky;
   top: 0;
-  min-height: 100%;
+  min-height: 100vh;
   padding-left: 0em;
   padding-top: 4em;
   color: #fff;
   transition: all 0.3s;
+  padding-left: 2em;
+  padding-right: 8em;
 }
 
 #sidebarContent {
