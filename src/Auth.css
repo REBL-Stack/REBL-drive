@@ -1,0 +1,31 @@
+
+
+/* Change the default dropdown caret (which is made with a custom border) */
+
+.Auth .dropdown-toggle::after {
+  border: none !important;
+  display: inline-block;
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+  content: ""; /* \f142 */
+  vertical-align: 0;
+}
+
+.Auth button:hover {
+}
+
+.Auth .btn:focus, .btn.focus {
+  /* eliminate bootstrap focus ring on show dropdown */
+  box-shadow: none;
+}
+
+.Auth .avatar img {
+  border-radius: 50%;
+  height: 32px;
+  width: 32px;
+  margin-right: 1em;
+}
+
+.Auth .avatar {
+  margin-right: 1em;
+}

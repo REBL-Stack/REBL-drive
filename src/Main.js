@@ -1,24 +1,36 @@
 import React, {useState} from 'react'
-import { useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
-import { useFiles, useFavorites, groupFiles, useFileMeta } from "./library/drive"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
+import filesize from 'filesize'
+import { useFiles, useFavorites, groupFiles, useFileMeta, useDirectoryMeta } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
 
 function FileRow ({dir, path}) {
   const {url, modified, size, deleteFile} = useFileMeta(dir + path)
-  return ( <tr><td><a href={url} target="_blank">{path}</a></td>
-               <td>{modified}</td>
-               <td>{size}</td>
-               <td><button onClick={deleteFile}>Delete</button></td>
-            </tr> )
+  const date = modified && new Date(modified)
+  const dateOptions = {month: "short", day: "numeric", year: "numeric"}
+  return (
+    <tr className="FileRow">
+      <td>
+        <span className="item-icon"><FontAwesomeIcon icon={faFile}/></span>
+        <a href={url} target="_blank" rel="noopener noreferrer">{path}</a>
+      </td>
+      <td>{date && date.toLocaleDateString(undefined, dateOptions)}</td>
+      <td>{size && filesize(size, {round: 1})}</td>
+      <td><button onClick={deleteFile}>Delete</button></td>
+    </tr> )
 }
 
 function DirRow ({dir, path, onOpen}) {
-  console.log("Dir:", dir)
+  const {modified, size} = useDirectoryMeta(dir + path)
   return (
-    <tr>
-       <td><a href="#" onClick={() => onOpen((dir + path).split("/"))}>{path}</a></td>
-       <td></td>
-       <td></td>
+    <tr className="DirRow">
+       <td className="text-left">
+         <span className="item-icon"><FontAwesomeIcon icon={faFolder}/></span>
+         <a href="#" onClick={() => onOpen((dir + path).split("/"))}>{path}</a>
+       </td>
+       <td>{modified}</td>
+       <td>{size}</td>
        <td></td>
     </tr>
   )
@@ -30,7 +42,9 @@ function FilesTable ({files, dirpath, setDir}) {
   return (
       <table className="table">
        <thead>
-       <tr><th>Name</th><th>Modified</th><th>Size</th></tr>
+       <tr className="">
+         <th>Name</th><th>Modified</th><th>Size</th><th>Actions</th>
+       </tr>
        </thead>
        <tbody>
         {Array.from(items.entries()).map(([name, content]) =>
@@ -43,15 +57,15 @@ function FilesTable ({files, dirpath, setDir}) {
       </table>)
 }
 
-const dirpathDefault = "img/social-security-card/"
+const dirpathDefault = "img/social-security-card".split("/")
 
 function Files ( props ) {
-  const [dir, setDir] = useState(dirpathDefault.split("/"))
-  const dirpath = dir.join("/") + "/"
+  const [dir, setDir] = useState(dirpathDefault)
   const dirfiles = useFiles(dir)
+  const dirpath = dir.join("/") + "/"
   return(
     <>
-      <Breadcrumb items={dirpath.split("/")} onClick={setDir}/>
+      <Breadcrumb title="Drive" items={dir} onClick={setDir}/>
       <FilesTable dirpath={dirpath} files={dirfiles} setDir={setDir}/>
     </>)
 }
@@ -59,7 +73,7 @@ function Files ( props ) {
 export default function Main (props) {
   const { person } = props
   return (
-    <main>
+    <main className="bg-light">
       <Files/>
     </main>
   )

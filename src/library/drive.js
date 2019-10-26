@@ -46,6 +46,8 @@ export function renameFile (userSession, path, rename) {
 }
 
 export function useFileMeta (pathname) {
+  // Properties returned:
+  // modified: A datestamp string in a format parseable by Date()
   const [content, setContent] = useFile(pathname)
   const url = useFileUrl(pathname)
   const init = {method: "GET", headers: new Headers({"User-Agent": "curl/7.43.0", "Accept":"*/*"})}
@@ -55,4 +57,10 @@ export function useFileMeta (pathname) {
   const size = response && response.headers.get("Content-Length")
   const deleteFile = () => setContent(null)
   return({fileUrl: url, modified, size, deleteFile})
+}
+
+export function useDirectoryMeta (path) {
+  const modified = ""
+  const size = ""
+  return ({modified, size})
 }
