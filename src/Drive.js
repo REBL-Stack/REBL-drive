@@ -39,8 +39,7 @@ function DirRow ({dir, name, onOpen}) {
   )
 }
 
-function FilesTable ({dir, setDir}) {
-  const directoryItems = useDirectoryItems(dir)
+export function FilesTable ({items, navigate}) {
   return (
       <table className="table">
        <thead>
@@ -49,28 +48,43 @@ function FilesTable ({dir, setDir}) {
        </tr>
        </thead>
        <tbody>
-        {directoryItems.map(({name, isDirectory}) =>
+        {items && items.map(({path, name, isDirectory}) =>
            isDirectory ?
-           <DirRow key={name} dir={dir} name={name} onOpen={setDir}/> :
-           <FileRow key={name} dir={dir} name={name}/> )}
+           <DirRow key={name} dir={path} name={name} onOpen={navigate}/> :
+           <FileRow key={name} dir={path} name={name}/> )}
        </tbody>
       </table>)
 }
 
-const dirpathDefault = "img/social-security-card".split("/")
-
-export function Files () {
-  const [dir, setDir] = useState(dirpathDefault)
+export default function Drive ({drive, navigate}) {
+  const dir = drive && drive.dir
+  const items = useDirectoryItems(dir)
   return(
     <>
-      <Breadcrumb title="Drive" items={dir} onClick={setDir}/>
-      <FilesTable dir={dir} setDir={setDir}/>
+     <Breadcrumb title="Drive" trail={dir} onClick={navigate}/>
+     <FilesTable items={items} navigate={navigate}/>
     </>)
 }
 
-export default function Main (props) {
-  const { person } = props
+export function Favorites (drive) {
+  const [favorites, toggleFavorite] = useFavorites(drive)
   return (
-      <Files/>
-  )
+    <>
+      <nav>Favorites</nav>
+      <FilesTable items={favorites}/>
+    </>)
+}
+
+export function Shared () {
+  return (
+    <>
+      <nav>Shared</nav>
+    </>)
+}
+
+export function Trash () {
+  return (
+    <>
+      <nav>Trash</nav>
+    </>)
 }

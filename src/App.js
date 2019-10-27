@@ -6,13 +6,15 @@ import { faHdd, faStar, faShare, faTrash, faPlus } from '@fortawesome/free-solid
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
 import { useDrive } from './library/drive'
 import Landing from './Landing'
-import Main from './Main'
+import Drive, {Favorites, Shared, Trash} from './Drive'
 import Auth from './Auth'
 import Action from './Action'
 
 export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
   const [drive, dispatch] = useDrive()
+  const { dir } = Object.assign({dir: ["img"]}, drive)
+  const navigate = (dir) => dispatch({action: "navigate", dir: dir})
   const upload = (files) => dispatch({action: "upload", files: files})
   return (
    <div className="App">
@@ -55,10 +57,10 @@ export default function App (props) {
             </Navbar>
             <main className="bg-light">
               <Switch>
-                <Route path="/drive" render={(props) => <Main person={person} />}/>
-                <Route path="/favorites" render={(props) => <Main person={person} />}/>
-                <Route path="/shared" render={(props) => <Main person={person} />}/>
-                <Route path="/trash" render={(props) => <Main person={person} />}/>
+                <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
+                <Route path="/favorites" render={(props) => <Favorites drive={drive}/>}/>
+                <Route path="/shared" render={(props) => <Shared />}/>
+                <Route path="/trash" render={(props) => <Trash />}/>
                 <Redirect exact from="/" to="/drive" />
               </Switch>
             </main>

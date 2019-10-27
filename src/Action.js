@@ -27,7 +27,7 @@ export default function ActionButton (props) {
             <FontAwesomeIcon icon={faFolderPlus}/>
             <span className="ml-2">Create Folder</span>
           </a>
-          <div class="dropdown-divider"></div>
+          <div className="dropdown-divider"></div>
           <a className="dropdown-item" onClick={ uploadFile }>
             <FontAwesomeIcon icon={faFileUpload}/>
             <span className="ml-2">Upload File</span>
