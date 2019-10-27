@@ -1,14 +1,12 @@
 import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
+import { faFolder, faFile, faStar } from '@fortawesome/free-solid-svg-icons'
 import filesize from 'filesize'
-import { useFiles, useFavorites, groupFiles, useFileMeta, useDirectoryMeta, useDriveItems } from "./library/drive"
+import { useFiles, useFavorites, useShared, useTrash, groupFiles, useFileMeta, useDirectoryMeta, useDriveItems } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
 
-function FileRow ({dir, name}) {
-  const dirpath = dir.join("/") + "/"
-  const path = dirpath + name
-  const {url, modified, size, deleteFile} = useFileMeta(path)
+function FileRow ({dir, name, pathname, favorite}) {
+  const {url, modified, size, deleteFile} = useFileMeta(pathname)
   const date = modified && new Date(modified)
   const dateOptions = {month: "short", day: "numeric", year: "numeric"}
   return (
@@ -16,6 +14,7 @@ function FileRow ({dir, name}) {
       <td>
         <span className="item-icon"><FontAwesomeIcon icon={faFile}/></span>
         <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
+        {favorite && <FontAwesomeIcon icon={faStar}/>}
       </td>
       <td>{date && date.toLocaleDateString(undefined, dateOptions)}</td>
       <td>{size && filesize(size, {round: 1})}</td>
@@ -24,13 +23,13 @@ function FileRow ({dir, name}) {
 }
 
 function DirRow ({dir, name, onOpen}) {
-  const dirpath = dir.join("/") + "/"
-  const {modified, size} = useDirectoryMeta(dirpath + name)
+  const fullpath = dir.join("/") + "/" + name
+  const {modified, size} = useDirectoryMeta(fullpath)
   return (
     <tr className="DirRow">
        <td className="text-left">
          <span className="item-icon"><FontAwesomeIcon icon={faFolder}/></span>
-         <a href="#" onClick={() => onOpen((dirpath + name).split("/"))}>{name}</a>
+         <a href="#" onClick={() => onOpen(fullpath.split("/"))}>{name}</a>
        </td>
        <td>{modified}</td>
        <td>{size}</td>
@@ -40,12 +39,12 @@ function DirRow ({dir, name, onOpen}) {
 }
 
 function ItemRow ({item, navigate}) {
-  const {path, name, isDirectory} = item
+  const {path, name, isDirectory, pathname, favorite} = item
   console.log("ITEM:", item)
   return (
     isDirectory ?
     <DirRow key={name} dir={path} name={name} onOpen={navigate}/> :
-    <FileRow key={name} dir={path} name={name}/>
+    <FileRow key={name} pathname={pathname} dir={path} name={name} favorite={favorite}/>
   )
 }
 
@@ -73,24 +72,28 @@ export default function Drive ({drive, navigate}) {
 }
 
 export function Favorites ({drive}) {
-  const [favorites, toggleFavorite] = useFavorites(drive)
+  const [items, toggleFavorite] = useFavorites(drive)
   return (
     <>
       <nav>Favorites</nav>
-      <FilesTable items={favorites}/>
+      <FilesTable items={items}/>
     </>)
 }
 
-export function Shared () {
+export function Shared ({drive}) {
+  const [items] = useShared(drive)
   return (
     <>
       <nav>Shared</nav>
+      <FilesTable items={items}/>
     </>)
 }
 
-export function Trash () {
+export function Trash ({drive}) {
+  const [items] = useTrash(drive)
   return (
     <>
       <nav>Trash</nav>
+      <FilesTable items={items}/>
     </>)
 }

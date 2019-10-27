@@ -3,16 +3,22 @@ import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'reac
 import {fromEvent} from 'file-selector'
 import { isNull, concat } from 'lodash'
 
-class DirectoryItem {
+class DriveItem {
   // Represents a file or directory in a Drive
+  // root: [] // only relevant when using filesystem, better if filepath
+  pathname /// name in gaia, required for files
+  dir: [] // path in virtual drive hierarchy
+  name: "untitled"
+  isDirectory: false
+  favorite: true
   constructor(obj) {
-    Object.assign(this, obj)
+    Object.assign(this, {favorite: true}, obj)
   }
 }
 
 class Drive {
-  root = []
-  dir = []
+  root = [] // only relevant when using filesystem
+  dir: [] // current directory shown
   constructor(obj) {
     Object.assign(this, obj)
   }
@@ -36,10 +42,11 @@ function matchingFiles (userSession, match) {
   return (new Promise(resolveFiles))
 }
 
-function asDirectoryItem (root, path) {
+function asDriveItem (root, path) {
   // path is a list of steps with the name being last
   const name = path[path.length - 1]
-  const item = new DirectoryItem({root: root, name: name, path: path.slice(0, -1)})
+  const pathname = concat(root, path).join("/")
+  const item = new DriveItem({pathname, path: path.slice(0, -1), name})
   return (item)
 }
 /* ================================================= */
@@ -107,22 +114,45 @@ export function useDirectoryMeta (path) {
 }
 
 export function useFavorites (drive) {
-  // returns a collection of DirectoryItem objects that are favorited
+  // returns a collection of DriveItem objects that are favorited
   const toggleFavorite = () => null
   const {root, dir} = drive
   const files = useFiles(dir)
-  const items = files && files.map( path => asDirectoryItem(root, concat(dir, path.split("/")) ))
+  const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
+  console.log("ITEMS:", dir, files, items)
+  return ([items, toggleFavorite])
+}
+
+export function useShared (drive) {
+  // returns a collection of DriveItem objects that are shared
+  const toggleFavorite = () => null
+  const {root, dir} = drive
+  const files = useFiles(dir)
+  const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
+  console.log("ITEMS:", dir, files, items)
+  return ([items, toggleFavorite])
+}
+
+export function useTrash (drive) {
+  // returns a collection of DriveItem objects that are shared
+  const toggleFavorite = () => null
+  const {root, dir} = drive
+  const files = useFiles(dir)
+  const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
   console.log("ITEMS:", dir, files, items)
   return ([items, toggleFavorite])
 }
 
 export function useDriveItems(drive) {
   // In: a drive
-  // Out: a collection of DirectoryItem objects representing its files and subdirectories
+  // Out: a collection of DriveItem objects representing its files and subdirectories
   const {root, dir} = drive
   const files = useFiles(dir)
   const items = files && groupFiles(files)
-  const convert = ([name, content]) => new DirectoryItem({root: root, path: dir, name: name, isDirectory: content})
+  const convert = ([name, content]) => {
+    const pathname = concat(root, dir).join("/") + name + (content ? "/" : "")
+    return (new DriveItem({pathname, root, path: dir, name, isDirectory: content}))
+  }
   const entriesArray = Array.from(items.entries())
   const out = entriesArray.map(convert)
   return (out)

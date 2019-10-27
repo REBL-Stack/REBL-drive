@@ -59,8 +59,8 @@ export default function App (props) {
               <Switch>
                 <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
                 <Route path="/favorites" render={(props) => <Favorites drive={drive}/>}/>
-                <Route path="/shared" render={(props) => <Shared />}/>
-                <Route path="/trash" render={(props) => <Trash />}/>
+                <Route path="/shared" render={(props) => <Shared drive={drive}/>}/>
+                <Route path="/trash" render={(props) => <Trash drive={drive}/>}/>
                 <Redirect exact from="/" to="/drive" />
               </Switch>
             </main>
