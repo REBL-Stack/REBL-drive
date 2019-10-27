@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile } from '@fortawesome/free-solid-svg-icons'
 import filesize from 'filesize'
-import { useFiles, useFavorites, groupFiles, useFileMeta, useDirectoryMeta, useDirectoryItems } from "./library/drive"
+import { useFiles, useFavorites, groupFiles, useFileMeta, useDirectoryMeta, useDriveItems } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
 
 function FileRow ({dir, name}) {
@@ -39,6 +39,16 @@ function DirRow ({dir, name, onOpen}) {
   )
 }
 
+function ItemRow ({item, navigate}) {
+  const {path, name, isDirectory} = item
+  console.log("ITEM:", item)
+  return (
+    isDirectory ?
+    <DirRow key={name} dir={path} name={name} onOpen={navigate}/> :
+    <FileRow key={name} dir={path} name={name}/>
+  )
+}
+
 export function FilesTable ({items, navigate}) {
   return (
       <table className="table">
@@ -48,25 +58,21 @@ export function FilesTable ({items, navigate}) {
        </tr>
        </thead>
        <tbody>
-        {items && items.map(({path, name, isDirectory}) =>
-           isDirectory ?
-           <DirRow key={name} dir={path} name={name} onOpen={navigate}/> :
-           <FileRow key={name} dir={path} name={name}/> )}
+        {items && items.map((item) => <ItemRow item={item} navigate={navigate}/>)}
        </tbody>
       </table>)
 }
 
 export default function Drive ({drive, navigate}) {
-  const dir = drive && drive.dir
-  const items = useDirectoryItems(dir)
+  const items = useDriveItems(drive)
   return(
     <>
-     <Breadcrumb title="Drive" trail={dir} onClick={navigate}/>
+     <Breadcrumb title="Drive" trail={drive.dir} onClick={navigate}/>
      <FilesTable items={items} navigate={navigate}/>
     </>)
 }
 
-export function Favorites (drive) {
+export function Favorites ({drive}) {
   const [favorites, toggleFavorite] = useFavorites(drive)
   return (
     <>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-
+import { isNull, concat } from 'lodash'
 
 class DirectoryItem {
   // Represents a file or directory in a Drive
@@ -18,28 +18,49 @@ class Drive {
   }
 }
 
+/* ================================================= */
 
+
+function matchingFiles (userSession, match) {
+  // promise with list of files starting with the path
+  const resolveFiles = (resolve, reject) => {
+    var files = []
+    userSession.listFiles((path) => {
+      if (path.startsWith(match)) {
+         files.push(path.substr(match.length))
+      }
+      return(true)
+    }).then(() => resolve(files))
+      .catch(reject)
+  }
+  return (new Promise(resolveFiles))
+}
+
+function asDirectoryItem (root, path) {
+  // path is a list of steps with the name being last
+  const name = path[path.length - 1]
+  const item = new DirectoryItem({root: root, name: name, path: path.slice(0, -1)})
+  return (item)
+}
 /* ================================================= */
 
 export function useFiles (dir) {
   // Files in a specific subpath
-  const [files, complete] = useFilesList()
-  const dirpath = dir.join("/") + "/"
-  const dirfiles = files.filter(path => path.startsWith(dirpath))
-                        .map(path => path.substr(dirpath.length))
-  return(dirfiles)
+  const {userSession} = useBlockstack()
+  const [files, setFiles] = useState()
+  useEffect( () => {
+    if (dir) {
+      const dirpath = dir.join("/") + "/"
+      matchingFiles(userSession, dirpath).then(setFiles)
+      // Fix: need to be able to cancel
+    } else {
+      setFiles(null)
+    }
+  },[userSession, dir])
+  return(files || [])
 }
 
 
-export function useFavorites (drive) {
-  // returns a collection of DirectoryItem objects that are favorited
-  const toggleFavorite = () => null
-  const toDirectoryItem = (favorite) => {
-    new DirectoryItem()
-  }
-  const favorites = []
-  return [favorites && favorites.map(toDirectoryItem), toggleFavorite]
-}
 
 function groupReducer (obj, path) {
   if (path.includes("/")) {
@@ -65,6 +86,7 @@ export function renameFile (userSession, path, rename) {
 }
 
 export function useFileMeta (pathname) {
+  // IN: a full filepath in gaia
   // Properties returned:
   // modified: A datestamp string in a format parseable by Date()
   const [content, setContent] = useFile(pathname)
@@ -84,12 +106,23 @@ export function useDirectoryMeta (path) {
   return ({modified, size})
 }
 
-export function useDirectoryItems(dir) {
-  // In: a directory path list
+export function useFavorites (drive) {
+  // returns a collection of DirectoryItem objects that are favorited
+  const toggleFavorite = () => null
+  const {root, dir} = drive
+  const files = useFiles(dir)
+  const items = files && files.map( path => asDirectoryItem(root, concat(dir, path.split("/")) ))
+  console.log("ITEMS:", dir, files, items)
+  return ([items, toggleFavorite])
+}
+
+export function useDriveItems(drive) {
+  // In: a drive
   // Out: a collection of DirectoryItem objects representing its files and subdirectories
+  const {root, dir} = drive
   const files = useFiles(dir)
   const items = files && groupFiles(files)
-  const convert = ([name, content]) => new DirectoryItem({path: dir, name: name, isDirectory: content})
+  const convert = ([name, content]) => new DirectoryItem({root: root, path: dir, name: name, isDirectory: content})
   const entriesArray = Array.from(items.entries())
   const out = entriesArray.map(convert)
   return (out)
