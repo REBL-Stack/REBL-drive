@@ -49,7 +49,7 @@ export default function Auth (props) {
                 <FontAwesomeIcon icon={faUserCog}/>
                 <span className="ml-2">Edit Profile</span>
               </a>
-              <div class="dropdown-divider"></div>
+              <div className="dropdown-divider"></div>
               <a className="dropdown-item" onClick={ signOut }>
                 <FontAwesomeIcon icon={faSignOutAlt}/>
                 <span className="ml-2">Sign out</span>

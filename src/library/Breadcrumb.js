@@ -6,7 +6,7 @@ export default function Breadcrumb ({items, onClick, title}) {
       <ul className="breadcrumb">
         {title &&
          <li className="breadcrumb-item breadcrumb-title">
-           <a href="#" onCLick={ () => onClick([])}>{title}</a>
+           <a href="#" onClick={ () => onClick([])}>{title}</a>
          </li>}
         {[...Array(items.length).keys()].map( n =>
           <li className="breadcrumb-item">

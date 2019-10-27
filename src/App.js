@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHdd, faStar, faShare, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
+import { useDrive } from './library/drive'
 import Landing from './Landing'
 import Main from './Main'
 import Auth from './Auth'
@@ -11,8 +12,11 @@ import Action from './Action'
 
 export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
+  const [drive, dispatch] = useDrive()
+  const upload = (files) => dispatch({action: "upload", files: files})
   return (
    <div className="App">
+      {!signIn && !signOut && <div>Authenticating...</div>}
       {signIn && <Landing />}
       {signOut &&
       <Router>
@@ -20,7 +24,8 @@ export default function App (props) {
           <ColAuto>
             <Sidebar className="border-right bg-light">
               <div className="w-100 mt-4 mb-5 text-center">
-                <Action className="btn-primary mx-auto rounded">
+                <Action className="btn-primary mx-auto rounded"
+                        onUpload={upload}>
                   <FontAwesomeIcon icon={faPlus}/>&nbsp;
                 </Action>
               </div>
@@ -48,13 +53,15 @@ export default function App (props) {
               </form>
               <Auth/>
             </Navbar>
-            <Switch>
-              <Route path="/drive" render={(props) => <Main person={person} />}/>
-              <Route path="/favorites" render={(props) => <Main person={person} />}/>
-              <Route path="/shared" render={(props) => <Main person={person} />}/>
-              <Route path="/trash" render={(props) => <Main person={person} />}/>
-              <Redirect exact from="/" to="/drive" />
-            </Switch>
+            <main className="bg-light">
+              <Switch>
+                <Route path="/drive" render={(props) => <Main person={person} />}/>
+                <Route path="/favorites" render={(props) => <Main person={person} />}/>
+                <Route path="/shared" render={(props) => <Main person={person} />}/>
+                <Route path="/trash" render={(props) => <Main person={person} />}/>
+                <Redirect exact from="/" to="/drive" />
+              </Switch>
+            </main>
           </Col>
         </Row>
       </Router>}

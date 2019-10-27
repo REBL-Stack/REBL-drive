@@ -1,26 +1,34 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useBlockstack } from 'react-blockstack'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolderPlus, faFileUpload } from '@fortawesome/free-solid-svg-icons'
-
-import $ from 'jquery'
-// import Popper from 'popper.js'
-import 'bootstrap/dist/js/bootstrap.bundle.min'
+import {fromEvent} from 'file-selector'
 
 export default function ActionButton (props) {
-    return (
+  const {className, onUpload} = props
+  const fileUploader = useRef(null)
+  const uploadFile =  () => {
+    console.log("Click...")
+    fileUploader.current.click()
+  }
+  const onFileChange = (evt) => {
+    fromEvent(evt).then((files) => onUpload(files))
+  }
+  const createFolder = () => null
+  return (
       <>
-        <button className={["btn dropdown-toggle", props.className].join(" ")}
+        <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
+        <button className={["btn dropdown-toggle", className].join(" ")}
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             { props.children }
         </button>
         <div className="dropdown-menu">
-          <a className="dropdown-item" href={""} target="_blank">
+          <a className="dropdown-item" onClick={ props.createFolder }>
             <FontAwesomeIcon icon={faFolderPlus}/>
             <span className="ml-2">Create Folder</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a className="dropdown-item" onClick={ null }>
+          <a className="dropdown-item" onClick={ uploadFile }>
             <FontAwesomeIcon icon={faFileUpload}/>
             <span className="ml-2">Upload File</span>
           </a>
