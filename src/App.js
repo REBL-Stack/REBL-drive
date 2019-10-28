@@ -14,7 +14,7 @@ export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
   const [drive, dispatch] = useDrive()
   const { dir } = Object.assign({dir: ["img"]}, drive)
-  const navigate = (dir) => dispatch({action: "navigate", dir: dir})
+  const navigate = (payload) => dispatch({...payload, action: "navigate"})
   const upload = (files) => dispatch({action: "upload", files: files})
   return (
    <div className="App">

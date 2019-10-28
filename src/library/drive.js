@@ -7,7 +7,7 @@ class DriveItem {
   // Represents a file or directory in a Drive
   // root: [] // only relevant when using filesystem, better if filepath
   pathname /// name in gaia, required for files
-  dir: [] // path in virtual drive hierarchy
+  dir: [] // path in virtual drive hierarchy, parent, excluding name
   name: "untitled"
   isDirectory: false
   favorite: true
@@ -92,15 +92,16 @@ export function renameFile (userSession, path, rename) {
                     .then(() => userSession.deleteFile(path) ))
 }
 
-export function useFileMeta (pathname) {
+export function useFileMeta (driveItem) {
   // IN: a full filepath in gaia
   // Properties returned:
   // modified: A datestamp string in a format parseable by Date()
+  const pathname = driveItem.pathname
   const [content, setContent] = useFile(pathname)
   const url = useFileUrl(pathname)
   const init = {method: "GET", headers: new Headers({"User-Agent": "curl/7.43.0", "Accept":"*/*"})}
   const response = useFetch(pathname, init)
-  // console.log("Response:", response, response && response.headers)
+  console.log("Response:", pathname, !!content, url, response)
   const modified = response && response.headers.get("Last-Modified")
   const size = response && response.headers.get("Content-Length")
   const deleteFile = () => setContent(null)
@@ -113,14 +114,44 @@ export function useDirectoryMeta (path) {
   return ({modified, size})
 }
 
+export function useDriveItem (item) {
+  return(item)
+}
+
+
+export function useSelection (drive) {
+  const [selection, setSelection] = useState(new Set([]))
+  const select = (item, status) => {
+      console.log("SELECT:", !isSelected(item), item)
+      if (selection.has(item) && !status) {
+        setSelection(items => {items.delete(item); return new Set(items)})
+      } else {
+        setSelection(items => {return new Set(items.add(item))})
+      }
+    }
+  const isSelected = (item) => selection.has(item)
+  return [selection, select, isSelected]
+}
+
 export function useFavorites (drive) {
   // returns a collection of DriveItem objects that are favorited
-  const toggleFavorite = () => null
   const {root, dir} = drive
   const files = useFiles(dir)
-  const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
-  console.log("ITEMS:", dir, files, items)
-  return ([items, toggleFavorite])
+  const [favorites, setFavorites] = useState(new Set())
+  useEffect( () => {
+    const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
+    setFavorites(new Set(items))
+  },[files])
+  const setFavorite = (item, status) => {
+    console.log("SET FAVORITE:", !!status, item)
+    if (!status) {
+      setFavorites( items => {items.delete(item); return new Set(items)})
+    } else {
+      setFavorites(items => {return new Set(items.add(item))})
+    }
+  }
+  const isFavorite = (item) => favorites.has(item)
+  return ([favorites, setFavorite, isFavorite])
 }
 
 export function useShared (drive) {
@@ -148,14 +179,18 @@ export function useDriveItems(drive) {
   // Out: a collection of DriveItem objects representing its files and subdirectories
   const {root, dir} = drive
   const files = useFiles(dir)
-  const items = files && groupFiles(files)
-  const convert = ([name, content]) => {
-    const pathname = concat(root, dir).join("/") + name + (content ? "/" : "")
-    return (new DriveItem({pathname, root, path: dir, name, isDirectory: content}))
-  }
-  const entriesArray = Array.from(items.entries())
-  const out = entriesArray.map(convert)
-  return (out)
+  const [state, setState] = useState()
+  useEffect( () => {
+    const items = files && groupFiles(files)
+    const convert = ([name, content]) => {
+      const pathname = concat(root, dir).join("/") + "/" + name // + (content ? "/" : "")
+      return (new DriveItem({pathname, root, dir: dir, name, isDirectory: content}))
+    }
+    const entriesArray = Array.from(items.entries())
+    const out = entriesArray.map(convert)
+    setState(out)
+  },[files])
+  return (state)
 }
 
 export function useUpload (props) {
@@ -197,7 +232,12 @@ export function useDrive () {
         upload(event.files)
         return null
       case "navigate":
-        setDir(event.dir)
+        if (event.item) {
+          const {root, dir, name} = event.item
+          setDir(concat(dir, [name]))
+        } else {
+          setDir(event.dir)
+        }
         return (null)
       default:
         console.warn("Unknown dispatch:", event.action)

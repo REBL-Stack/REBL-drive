@@ -2,15 +2,17 @@ import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile, faStar } from '@fortawesome/free-solid-svg-icons'
 import filesize from 'filesize'
-import { useFiles, useFavorites, useShared, useTrash, groupFiles, useFileMeta, useDirectoryMeta, useDriveItems } from "./library/drive"
+import { useFiles, useFavorites, useSelection, useShared, useTrash, groupFiles, useDriveItem, useFileMeta, useDirectoryMeta, useDriveItems } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
 
-function FileRow ({dir, name, pathname, favorite}) {
-  const {url, modified, size, deleteFile} = useFileMeta(pathname)
+function FileRow ({dir, name, item, favorite, selected, onClick}) {
+  const meta = useFileMeta(item)
+  const {url, modified, size, deleteFile} = meta
+  console.log("FILEMETA:", item, meta)
   const date = modified && new Date(modified)
   const dateOptions = {month: "short", day: "numeric", year: "numeric"}
   return (
-    <tr className="FileRow">
+    <tr className={["FileRow", selected && "table-active"].join(" ")} onClick={onClick}>
       <td>
         <span className="item-icon"><FontAwesomeIcon icon={faFile}/></span>
         <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
@@ -22,14 +24,13 @@ function FileRow ({dir, name, pathname, favorite}) {
     </tr> )
 }
 
-function DirRow ({dir, name, onOpen}) {
-  const fullpath = dir.join("/") + "/" + name
-  const {modified, size} = useDirectoryMeta(fullpath)
+function DirRow ({item, name, onOpen, selected, onClick}) {
+  const {modified, size} = useDirectoryMeta(item.pathname)
   return (
-    <tr className="DirRow">
+    <tr className={["DirRow", selected && "active"].join(" ")} onClick={onClick}>
        <td className="text-left">
          <span className="item-icon"><FontAwesomeIcon icon={faFolder}/></span>
-         <a href="#" onClick={() => onOpen(fullpath.split("/"))}>{name}</a>
+         <a href="#" onClick={() => onOpen({item: item})}>{name}</a>
        </td>
        <td>{modified}</td>
        <td>{size}</td>
@@ -38,36 +39,59 @@ function DirRow ({dir, name, onOpen}) {
   )
 }
 
-function ItemRow ({item, navigate}) {
-  const {path, name, isDirectory, pathname, favorite} = item
+function ItemRow ({item, navigate, selected, onClick}) {
+  const {path, name, isDirectory, pathname, favorite} = useDriveItem(item)
   console.log("ITEM:", item)
   return (
     isDirectory ?
-    <DirRow key={name} dir={path} name={name} onOpen={navigate}/> :
-    <FileRow key={name} pathname={pathname} dir={path} name={name} favorite={favorite}/>
+    <DirRow key={name} item={item} name={name} selected={selected} onClick={onClick} onOpen={navigate}/> :
+    <FileRow key={name} selected={selected} item={item} selected={selected} onClick={onClick} dir={path} name={name} favorite={favorite}/>
   )
 }
 
-export function FilesTable ({items, navigate}) {
+export function FilesTable ({items, navigate, select, isSelected}) {
   return (
-      <table className="table">
+      <table className="table table-hover">
        <thead>
        <tr className="">
-         <th>Name</th><th>Modified</th><th>Size</th><th>Actions</th>
+         <th></th>
+         <th>Name</th>
+         <th>Modified</th>
+         <th>Size</th>
+         <th>Actions</th>
        </tr>
        </thead>
        <tbody>
-        {items && items.map((item) => <ItemRow item={item} navigate={navigate}/>)}
+        {items && items.map((item) => {
+          const selected = isSelected(item)
+          return <ItemRow key={item.name} selected={selected} onClick={()=>select(item)} item={item} navigate={navigate}/>
+          })}
        </tbody>
       </table>)
 }
 
 export default function Drive ({drive, navigate}) {
   const items = useDriveItems(drive)
+  const [favorites, setFavorite, isFavorite] = useFavorites(drive)
+  const [selection, select, isSelected] = useSelection(drive)
   return(
     <>
-     <Breadcrumb title="Drive" trail={drive.dir} onClick={navigate}/>
-     <FilesTable items={items} navigate={navigate}/>
+     <div className="d-flex justify-content-between">
+       <Breadcrumb title="Drive" trail={drive.dir} onClick={navigate}/>
+       <div>
+         {(selection.size > 0) &&
+           <button type="button" className="btn btn-light btn-rounded"
+             onClick={() => {
+               // FIX: Iterate over all values
+               const item = selection.values().next().value
+               console.log("CLICK", item)
+               setFavorite(item, !isFavorite(item))
+             }}>
+             <FontAwesomeIcon icon={faStar}/>
+           </button>}
+       </div>
+     </div>
+     <FilesTable items={items} select={select} isSelected={isSelected} navigate={navigate}/>
     </>)
 }
 
