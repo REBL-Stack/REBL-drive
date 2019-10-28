@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-import { isNull, concat } from 'lodash'
+import { isNull, concat, get, set } from 'lodash'
+import { Atom, swap, useAtom, deref} from "@dbeining/react-atom"
 
 class DriveItem {
   // Represents a file or directory in a Drive
@@ -10,7 +11,6 @@ class DriveItem {
   dir: [] // path in virtual drive hierarchy, parent, excluding name
   name: "untitled"
   isDirectory: false
-  favorite: true
   constructor(obj) {
     Object.assign(this, {favorite: true}, obj)
   }
@@ -19,6 +19,7 @@ class DriveItem {
 class Drive {
   root = [] // only relevant when using filesystem
   dir: [] // current directory shown
+  collections: {}
   constructor(obj) {
     Object.assign(this, obj)
   }
@@ -133,45 +134,51 @@ export function useSelection (drive) {
   return [selection, select, isSelected]
 }
 
-export function useFavorites (drive) {
+function internCollectionAtom (drive, label) {
+  // Side effect: modifies collections of drive, but OK
+  var atom = get(drive.collections, [label], null)
+  if (!atom) {
+    console.log("INIT COLLECTION", label)
+    atom = Atom.of(new Set())
+    set(drive.collections, [label], atom)
+  }
+  return(atom)
+}
+
+function useCollectionAtom (drive, label) {
+  const atom = internCollectionAtom(drive, label)
+  const collection = useAtom(atom)
+  const setCollection = (update) => swap(atom, update)
+  return [collection, setCollection]
+}
+
+function useCollection (drive, label) {
   // returns a collection of DriveItem objects that are favorited
-  const {root, dir} = drive
-  const files = useFiles(dir)
-  const [favorites, setFavorites] = useState(new Set())
-  useEffect( () => {
-    const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
-    setFavorites(new Set(items))
-  },[files])
-  const setFavorite = (item, status) => {
-    console.log("SET FAVORITE:", !!status, item)
+  // const {root, dir} = drive
+  const [collection, setCollection] = useCollectionAtom(drive, label)
+  const items = collection || new Set()
+  console.log("COLLECTION:", items)
+  const setStatus = (item, status) => {
     if (!status) {
-      setFavorites( items => {items.delete(item); return new Set(items)})
+      setCollection( items => new Set([...items].filter( x => !(x == item))) )
     } else {
-      setFavorites(items => {return new Set(items.add(item))})
+      setCollection( items => new Set([...items, item]) )
     }
   }
-  const isFavorite = (item) => favorites.has(item)
-  return ([favorites, setFavorite, isFavorite])
+  const getStatus = (item) => items.has(item)
+  return ([items, setStatus, getStatus])
+}
+
+export function useFavorites (drive) {
+  return useCollection(drive, "favorites")
 }
 
 export function useShared (drive) {
-  // returns a collection of DriveItem objects that are shared
-  const toggleFavorite = () => null
-  const {root, dir} = drive
-  const files = useFiles(dir)
-  const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
-  console.log("ITEMS:", dir, files, items)
-  return ([items, toggleFavorite])
+  return useCollection(drive, "shared")
 }
 
 export function useTrash (drive) {
-  // returns a collection of DriveItem objects that are shared
-  const toggleFavorite = () => null
-  const {root, dir} = drive
-  const files = useFiles(dir)
-  const items = files && files.map( path => asDriveItem(root, concat(dir, path.split("/")) ))
-  console.log("ITEMS:", dir, files, items)
-  return ([items, toggleFavorite])
+  return useCollection(drive, "trash")
 }
 
 export function useDriveItems(drive) {
@@ -221,8 +228,11 @@ export function useUpload (props) {
 
 const dirpathDefault = ["img"]
 
+const driveAtom = Atom.of(new Drive({dir:dirpathDefault}))
+
 export function useDrive () {
   // interface and state for access to a drive
+  const drive = useAtom(driveAtom)
   const [dir, setDir] = useState(dirpathDefault)
   const [upload, uploadStatus] = useUpload({dir: dir})
   const dispatch = (event) => {
@@ -243,6 +253,8 @@ export function useDrive () {
         console.warn("Unknown dispatch:", event.action)
     }
   }
-  const drive = new Drive({dir: dir})
+  useEffect( () => {
+    drive.dir = dir
+  }, [dir])
   return [drive, dispatch]
 }

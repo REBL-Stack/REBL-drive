@@ -24,7 +24,7 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
     </tr> )
 }
 
-function DirRow ({item, name, onOpen, selected, onClick}) {
+function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
   const {modified, size} = useDirectoryMeta(item.pathname)
   return (
     <tr className={["DirRow", selected && "active"].join(" ")} onClick={onClick}>
@@ -39,17 +39,17 @@ function DirRow ({item, name, onOpen, selected, onClick}) {
   )
 }
 
-function ItemRow ({item, navigate, selected, onClick}) {
-  const {path, name, isDirectory, pathname, favorite} = useDriveItem(item)
+function ItemRow ({item, navigate, selected, favorite, onClick}) {
+  const {path, name, isDirectory, pathname} = useDriveItem(item)
   console.log("ITEM:", item)
   return (
     isDirectory ?
-    <DirRow key={name} item={item} name={name} selected={selected} onClick={onClick} onOpen={navigate}/> :
-    <FileRow key={name} selected={selected} item={item} selected={selected} onClick={onClick} dir={path} name={name} favorite={favorite}/>
+    <DirRow key={name} item={item} name={name} favorite={favorite} selected={selected} onClick={onClick} onOpen={navigate}/> :
+    <FileRow key={name} selected={selected} item={item} favorite={favorite} selected={selected} onClick={onClick} dir={path} name={name} favorite={favorite}/>
   )
 }
 
-export function FilesTable ({items, navigate, select, isSelected}) {
+export function FilesTable ({items, navigate, select, isSelected, isFavorite}) {
   return (
       <table className="table table-hover">
        <thead>
@@ -64,7 +64,8 @@ export function FilesTable ({items, navigate, select, isSelected}) {
        <tbody>
         {items && items.map((item) => {
           const selected = isSelected(item)
-          return <ItemRow key={item.name} selected={selected} onClick={()=>select(item)} item={item} navigate={navigate}/>
+          const favorite = isFavorite(item)
+          return <ItemRow key={item.name} selected={selected} favorite={favorite} onClick={()=>select(item)} item={item} navigate={navigate}/>
           })}
        </tbody>
       </table>)
@@ -84,14 +85,15 @@ export default function Drive ({drive, navigate}) {
              onClick={() => {
                // FIX: Iterate over all values
                const item = selection.values().next().value
-               console.log("CLICK", item)
-               setFavorite(item, !isFavorite(item))
+               const change = !isFavorite(item)
+               console.log("CLICK", change, item)
+               setFavorite(item, change)
              }}>
              <FontAwesomeIcon icon={faStar}/>
            </button>}
        </div>
      </div>
-     <FilesTable items={items} select={select} isSelected={isSelected} navigate={navigate}/>
+     <FilesTable items={items} select={select} isSelected={isSelected} isFavorite={isFavorite} navigate={navigate}/>
     </>)
 }
 
