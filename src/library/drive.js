@@ -210,9 +210,12 @@ export function useDriveItems(drive) {
   const {root, dir, itemsAtom} = drive
   const files = useFiles(dir)
   const [state, setState] = useStateAtom(itemsAtom)
+  console.log("ItemsAtom:", itemsAtom, state)
   useEffect( () => {
-    const tree = files && groupFiles(files)
-    setState(tree && asDriveItems(drive, tree))
+    if (files) { // FIX: useFiles returns [] initially but shouldn't
+      const tree = files && groupFiles(files)
+      setState(tree && asDriveItems(drive, tree))
+    }
   },[files])
   return (state)
 }

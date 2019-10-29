@@ -79,7 +79,7 @@ export default function Drive ({drive, navigate}) {
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const [selection, select, isSelected] = useSelection(drive)
 
-  console.log("SELECTION SIZE:", selection, selection.size)
+  console.log("DRIVE ITEMS:", items)
   return(
     <>
      <div className="d-flex justify-content-between">
