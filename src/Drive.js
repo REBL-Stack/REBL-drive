@@ -78,6 +78,7 @@ export default function Drive ({drive, navigate}) {
   const items = useDriveItems(drive)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const [selection, select, isSelected] = useSelection(drive)
+
   console.log("SELECTION SIZE:", selection, selection.size)
   return(
     <>
@@ -87,11 +88,11 @@ export default function Drive ({drive, navigate}) {
          { !isEmpty(selection) &&
            <button type="button" className="btn btn-light btn-rounded"
              onClick={() => {
-               // FIX: Iterate over all values
                const item = selection[0]
                const change = !isFavorite(item)
-               console.log("CLICK", change, item)
-               setFavorite(item, change)
+               selection.forEach((item) => {
+                 setFavorite(item, change)
+               })
              }}>
              <FontAwesomeIcon icon={faStar}/>
            </button>}
@@ -102,7 +103,7 @@ export default function Drive ({drive, navigate}) {
 }
 
 export function Favorites ({drive}) {
-  const [items, toggleFavorite] = useFavorites(drive)
+  const [items] = useFavorites(drive)
   return (
     <>
       <nav>Favorites</nav>

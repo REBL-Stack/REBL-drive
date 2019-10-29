@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-import { isNull, concat, get, set } from 'lodash'
+import { isNull, concat, get, set, merge, isFunction } from 'lodash'
 import { Atom, swap, useAtom, deref} from "@dbeining/react-atom"
 
 class DriveItem {
@@ -20,8 +20,9 @@ class Drive {
   root = [] // only relevant when using filesystem
   dir: [] // current directory shown
   collections: {}
+  itemsAtom // id -> DriveItem
   constructor(obj) {
-    Object.assign(this, obj)
+    Object.assign(this, {itemsAtom: Atom.of([])}, obj)
   }
 }
 
@@ -50,6 +51,21 @@ function asDriveItem (root, path) {
   const item = new DriveItem({pathname, path: path.slice(0, -1), name})
   return (item)
 }
+
+function useStateAtom(atom) {
+  // Like useState but with an Atom
+  // suggest for atom package?
+  const state = useAtom(atom)
+  const setState = useCallback((update) => {
+    if (isFunction(update)) {
+      return swap(atom, update)
+    } else {
+      return swap(atom, (_) => update)
+    }
+  }, [atom])
+  return [state, setState]
+}
+
 /* ================================================= */
 
 export function useFiles (dir) {
@@ -133,9 +149,7 @@ function internCollectionAtom (drive, label) {
 
 function useCollectionAtom (drive, label) {
   const atom = internCollectionAtom(drive, label)
-  const collection = useAtom(atom)
-  const setCollection = useCallback( (update) => swap(atom, update), [atom] )
-  console.log("Use Collection Atom:", label, collection)
+  const [collection, setCollection] = useStateAtom(atom)
   return [collection, setCollection]
 }
 
@@ -178,30 +192,37 @@ export function useSelection (drive) {
   return [selection, toggle, isSelected ]
 }
 
+function asDriveItems (drive, tree) {
+  // tree is a map from names to subitems (if directory) or null if file
+  const {root, dir, itemsAtom} = drive
+  const convert = ([name, content]) => {
+    const pathname = concat(root, dir).join("/") + "/" + name // + (content ? "/" : "")
+    return (new DriveItem({pathname, root, dir: dir, name, isDirectory: content}))
+  }
+  const entriesArray = Array.from(tree.entries())
+  const out = entriesArray.map(convert)
+  return out
+}
+
 export function useDriveItems(drive) {
   // In: a drive
   // Out: a collection of DriveItem objects representing its files and subdirectories
-  const {root, dir} = drive
+  const {root, dir, itemsAtom} = drive
   const files = useFiles(dir)
-  const [state, setState] = useState()
+  const [state, setState] = useStateAtom(itemsAtom)
   useEffect( () => {
-    const items = files && groupFiles(files)
-    const convert = ([name, content]) => {
-      const pathname = concat(root, dir).join("/") + "/" + name // + (content ? "/" : "")
-      return (new DriveItem({pathname, root, dir: dir, name, isDirectory: content}))
-    }
-    const entriesArray = Array.from(items.entries())
-    const out = entriesArray.map(convert)
-    setState(out)
+    const tree = files && groupFiles(files)
+    setState(tree && asDriveItems(drive, tree))
   },[files])
   return (state)
 }
 
-export function useUpload (props) {
-  const { dir } = props || {}
+export function useUpload (drive) {
+  const {root, dir, itemsAtom } = drive || {}
   const dirpath = dir && (dir.join("/") + "/")
   const { userSession } = useBlockstack()
   const [files, setFiles] = useState()
+  const [state, setState] = useStateAtom(itemsAtom)
   const putFile = userSession.putFile
   useEffect( () => {
     if (files) {
@@ -212,6 +233,10 @@ export function useUpload (props) {
         reader.onload = () => {
           const content = reader.result
           putFile(name, content)
+          const tree = new Map([])
+          tree.set(name, null)
+          const extra = asDriveItems(drive, tree)
+          setState((items) => [...items, ...extra])
         }
       reader.readAsArrayBuffer(file)
       })
@@ -230,8 +255,8 @@ const driveAtom = Atom.of(new Drive({dir:dirpathDefault}))
 export function useDrive () {
   // interface and state for access to a drive
   const drive = useAtom(driveAtom)
-  const [dir, setDir] = useState(dirpathDefault)
-  const [upload, uploadStatus] = useUpload({dir: dir})
+  const setDir = (dir) => swap(driveAtom, (drive => new Drive(merge({}, drive, {dir: dir}))))
+  const [upload, uploadStatus] = useUpload(drive)
   const dispatch = (event) => {
     console.log("Dispatch:", event)
     switch (event.action) {
@@ -250,8 +275,5 @@ export function useDrive () {
         console.warn("Unknown dispatch:", event.action)
     }
   }
-  useEffect( () => {
-    drive.dir = dir
-  }, [dir])
   return [drive, dispatch]
 }
