@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile, faStar } from '@fortawesome/free-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import filesize from 'filesize'
-import { useFiles, useFavorites, useSelection, useShared, useTrash, groupFiles, useDriveItem, useFileMeta, useDirectoryMeta, useDriveItems } from "./library/drive"
+import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
+         useDriveItems, useDriveItem, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
 
 function FileRow ({dir, name, item, favorite, selected, onClick}) {
@@ -40,9 +41,9 @@ function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
   )
 }
 
-function ItemRow ({item, navigate, selected, favorite, onClick}) {
+function ItemRow ({item, navigate, selected, onClick}) {
   const {path, name, isDirectory, pathname} = useDriveItem(item)
-  console.log("ITEM:", item)
+  const [favorite] = useFavorite(item)
   return (
     isDirectory ?
     <DirRow key={name} item={item} name={name} favorite={favorite} selected={selected} onClick={onClick} onOpen={navigate}/> :
@@ -51,6 +52,7 @@ function ItemRow ({item, navigate, selected, favorite, onClick}) {
 }
 
 export function FilesTable ({drive, items, navigate}) {
+  // Show a table of drive items, subset of those in the drive
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const [selection, select, isSelected] = useSelection(drive)
   return (
@@ -75,11 +77,9 @@ export function FilesTable ({drive, items, navigate}) {
 }
 
 export default function Drive ({drive, navigate}) {
-  const items = useDriveItems(drive)
+  const items = useDriveBranch(drive)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const [selection, select, isSelected] = useSelection(drive)
-
-  console.log("DRIVE ITEMS:", items)
   return(
     <>
      <div className="d-flex justify-content-between">
@@ -103,11 +103,12 @@ export default function Drive ({drive, navigate}) {
 }
 
 export function Favorites ({drive}) {
-  const [items] = useFavorites(drive)
+  const [favorites, setFavorite, getFavorite] = useFavorites(drive)
+  const items = useDriveItems(drive, favorites)
   return (
     <>
       <nav>Favorites</nav>
-      <FilesTable items={items}/>
+      <FilesTable drive={drive} items={items}/>
     </>)
 }
 
@@ -116,7 +117,7 @@ export function Shared ({drive}) {
   return (
     <>
       <nav>Shared</nav>
-      <FilesTable items={items}/>
+      <FilesTable drive={drive} items={items}/>
     </>)
 }
 
@@ -125,6 +126,6 @@ export function Trash ({drive}) {
   return (
     <>
       <nav>Trash</nav>
-      <FilesTable items={items}/>
+      <FilesTable drive={drive} items={items}/>
     </>)
 }

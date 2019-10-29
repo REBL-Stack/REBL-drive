@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-import { isNull, concat, get, set, merge, isFunction } from 'lodash'
+import _, { isNull, isNil, concat, get, set, merge, isFunction, map, filter } from 'lodash'
 import { Atom, swap, useAtom, deref} from "@dbeining/react-atom"
 
 class DriveItem {
   // Represents a file or directory in a Drive
   // root: [] // only relevant when using filesystem, better if filepath
-  pathname /// name in gaia, required for files
+  pathname /// name in gaia, required for files, used as id for now
   dir: [] // path in virtual drive hierarchy, parent, excluding name
   name: "untitled"
   isDirectory: false
@@ -20,7 +20,7 @@ class Drive {
   root = [] // only relevant when using filesystem
   dir: [] // current directory shown
   collections: {}
-  itemsAtom // id -> DriveItem
+  itemsAtom // atom with id -> DriveItem
   constructor(obj) {
     Object.assign(this, {itemsAtom: Atom.of([])}, obj)
   }
@@ -135,12 +135,18 @@ export function useDriveItem (item) {
   return(item)
 }
 
+/* ========================================================
+   COLLECTIONS (generalize into react-blockstack)
+
+   A collection is a Map from an id string to some value.
+
+*/
 
 function internCollectionAtom (drive, label) {
   // Side effect: modifies collections of drive, but OK
   var atom = get(drive, ["collections", label], null)
   if (!atom) {
-    atom = Atom.of(new Set())
+    atom = Atom.of({})
     set(drive, ["collections", label], atom)
   } else {
   }
@@ -154,22 +160,20 @@ function useCollectionAtom (drive, label) {
 }
 
 function useCollection (drive, label) {
-  // returns a collection of DriveItem objects that are favorited
+  // returns an array of keys in the collection, followed by a getter and setter
   // const {root, dir} = drive
   const [collection, setCollection] = useCollectionAtom(drive, label)
-  const items = collection
-  console.log("COLLECTION:", items)
-  const setStatus =
-  useCallback((item, status) => {
-    console.log("COLLECTION SET STATUS:", status, item, items)
+  const setter = useCallback((id, value) => {
+    setCollection( collection => ({...collection, [id]: value}))
+    /*
     if (!status) {
       setCollection( items => new Set([...items].filter( x => !(x == item))) )
     } else {
       setCollection( items => new Set([...items, item]) )
-    }
-  }, [items])
-  const getStatus = (item) => items.has(item)
-  return ([Array.from(items), setStatus, getStatus])
+    }*/
+  }, [collection])
+  const getter = (id) => get(collection, id)
+  return ([Array.from(Object.keys(collection)), setter, getter])
 }
 
 export function useFavorites (drive) {
@@ -187,12 +191,23 @@ export function useTrash (drive) {
 export function useSelection (drive) {
   const [selection, select, isSelected] = useCollection(drive, "selection")
   const toggle = (item) => {
-    select(item, !isSelected(item))
+    select(item.pathname, !isSelected(item.pathname))
   }
-  return [selection, toggle, isSelected ]
+  return [selection, toggle, item => isSelected(item.pathname) ]
 }
 
-function asDriveItems (drive, tree) {
+export function useFavorite(driveItem) {
+  // Testing to see if this is preferable to useFavorites
+  // FIX: optimize to avoid generating favorites
+  const drive = useAtom(driveAtom)
+  const [favorites, setFavorite, isFavorite] = useFavorites(drive)
+  const toggle = () => setFavorite(driveItem.pathname, (status) => !status)
+  return ([isFavorite(driveItem.pathname), toggle])
+}
+
+/* ============================================================== */
+
+function asDriveItemsList (drive, tree) {
   // tree is a map from names to subitems (if directory) or null if file
   const {root, dir, itemsAtom} = drive
   const convert = ([name, content]) => {
@@ -204,9 +219,8 @@ function asDriveItems (drive, tree) {
   return out
 }
 
-export function useDriveItems(drive) {
-  // In: a drive
-  // Out: a collection of DriveItem objects representing its files and subdirectories
+export function useDriveBranch(drive) {
+  // OUT: Array with top level drive items for the current branch (specified by dir)
   const {root, dir, itemsAtom} = drive
   const files = useFiles(dir)
   const [state, setState] = useStateAtom(itemsAtom)
@@ -214,10 +228,18 @@ export function useDriveItems(drive) {
   useEffect( () => {
     if (files) { // FIX: useFiles returns [] initially but shouldn't
       const tree = files && groupFiles(files)
-      setState(tree && asDriveItems(drive, tree))
+      setState(tree && asDriveItemsList(drive, tree))
     }
   },[files])
   return (state)
+}
+
+export function useDriveItems (drive, ids) {
+  // IN: List of ids for drive items to return, or nil for all
+  // OUT: Array of matching drive items, in same order
+  const {itemsAtom} = drive
+  const [state, setState] = useStateAtom(itemsAtom)
+  return (isNil(ids) ? state : map(ids, (id) => _.find(state, (item) => (item.pathname == id))))
 }
 
 export function useUpload (drive) {
@@ -238,7 +260,7 @@ export function useUpload (drive) {
           putFile(name, content)
           const tree = new Map([])
           tree.set(name, null)
-          const extra = asDriveItems(drive, tree)
+          const extra = asDriveItemsList(drive, tree)
           setState((items) => [...items, ...extra])
         }
       reader.readAsArrayBuffer(file)
