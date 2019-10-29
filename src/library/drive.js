@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
 import { isNull, concat, get, set } from 'lodash'
@@ -12,7 +12,7 @@ class DriveItem {
   name: "untitled"
   isDirectory: false
   constructor(obj) {
-    Object.assign(this, {favorite: true}, obj)
+    Object.assign(this, obj)
   }
 }
 
@@ -120,35 +120,25 @@ export function useDriveItem (item) {
 }
 
 
-export function useSelection (drive) {
-  const [selection, setSelection] = useState(new Set([]))
-  const select = (item, status) => {
-      console.log("SELECT:", !isSelected(item), item)
-      if (selection.has(item) && !status) {
-        setSelection(items => {items.delete(item); return new Set(items)})
-      } else {
-        setSelection(items => {return new Set(items.add(item))})
-      }
-    }
-  const isSelected = (item) => selection.has(item)
-  return [selection, select, isSelected]
-}
-
 function internCollectionAtom (drive, label) {
   // Side effect: modifies collections of drive, but OK
-  var atom = get(drive.collections, [label], null)
+  var atom = get(drive, ["collections", label], null)
   if (!atom) {
-    console.log("INIT COLLECTION", label)
     atom = Atom.of(new Set())
-    set(drive.collections, [label], atom)
+    console.log("INIT COLLECTION ATOM", label, atom)
+    set(drive, ["collections", label], atom)
+  } else {
+    console.log("GOT COLLECTION ATOM", label)
   }
+  console.log("COLLECTION=", get(drive, ["collections", label], null))
   return(atom)
 }
 
 function useCollectionAtom (drive, label) {
   const atom = internCollectionAtom(drive, label)
   const collection = useAtom(atom)
-  const setCollection = (update) => swap(atom, update)
+  const setCollection = useCallback( (update) => swap(atom, update), [atom] )
+  console.log("Use Collection Atom:", label, collection)
   return [collection, setCollection]
 }
 
@@ -156,17 +146,19 @@ function useCollection (drive, label) {
   // returns a collection of DriveItem objects that are favorited
   // const {root, dir} = drive
   const [collection, setCollection] = useCollectionAtom(drive, label)
-  const items = collection || new Set()
+  const items = collection
   console.log("COLLECTION:", items)
-  const setStatus = (item, status) => {
+  const setStatus =
+  useCallback((item, status) => {
+    console.log("COLLECTION SET STATUS:", status, item, items)
     if (!status) {
       setCollection( items => new Set([...items].filter( x => !(x == item))) )
     } else {
       setCollection( items => new Set([...items, item]) )
     }
-  }
+  }, [items])
   const getStatus = (item) => items.has(item)
-  return ([items, setStatus, getStatus])
+  return ([Array.from(items), setStatus, getStatus])
 }
 
 export function useFavorites (drive) {
@@ -179,6 +171,21 @@ export function useShared (drive) {
 
 export function useTrash (drive) {
   return useCollection(drive, "trash")
+}
+
+// TODO: useCollection instead, with no persistence
+export function useSelection (drive) {
+  const [selection, setSelection] = useState(new Set([]))
+  const select = (item, status) => {
+      console.log("SELECT:", !isSelected(item), item)
+      if (selection.has(item) && !status) {
+        setSelection(items => {items.delete(item); return new Set(items)})
+      } else {
+        setSelection(items => {return new Set(items.add(item))})
+      }
+    }
+  const isSelected = (item) => selection.has(item)
+  return [selection, select, isSelected]
 }
 
 export function useDriveItems(drive) {
