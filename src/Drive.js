@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile, faStar } from '@fortawesome/free-solid-svg-icons'
+import { isEmpty } from 'lodash'
 import filesize from 'filesize'
 import { useFiles, useFavorites, useSelection, useShared, useTrash, groupFiles, useDriveItem, useFileMeta, useDirectoryMeta, useDriveItems } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
@@ -49,7 +50,9 @@ function ItemRow ({item, navigate, selected, favorite, onClick}) {
   )
 }
 
-export function FilesTable ({items, navigate, select, isSelected, isFavorite}) {
+export function FilesTable ({drive, items, navigate}) {
+  const [favorites, setFavorite, isFavorite] = useFavorites(drive)
+  const [selection, select, isSelected] = useSelection(drive)
   return (
       <table className="table table-hover">
        <thead>
@@ -75,16 +78,17 @@ export default function Drive ({drive, navigate}) {
   const items = useDriveItems(drive)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const [selection, select, isSelected] = useSelection(drive)
+  console.log("SELECTION SIZE:", selection, selection.size)
   return(
     <>
      <div className="d-flex justify-content-between">
        <Breadcrumb title="Drive" trail={drive.dir} onClick={navigate}/>
        <div>
-         {(selection.size > 0) &&
+         { !isEmpty(selection) &&
            <button type="button" className="btn btn-light btn-rounded"
              onClick={() => {
                // FIX: Iterate over all values
-               const item = selection.values().next().value
+               const item = selection[0]
                const change = !isFavorite(item)
                console.log("CLICK", change, item)
                setFavorite(item, change)
@@ -93,7 +97,7 @@ export default function Drive ({drive, navigate}) {
            </button>}
        </div>
      </div>
-     <FilesTable items={items} select={select} isSelected={isSelected} isFavorite={isFavorite} navigate={navigate}/>
+     <FilesTable drive={drive} items={items} navigate={navigate}/>
     </>)
 }
 

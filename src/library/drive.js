@@ -125,12 +125,9 @@ function internCollectionAtom (drive, label) {
   var atom = get(drive, ["collections", label], null)
   if (!atom) {
     atom = Atom.of(new Set())
-    console.log("INIT COLLECTION ATOM", label, atom)
     set(drive, ["collections", label], atom)
   } else {
-    console.log("GOT COLLECTION ATOM", label)
   }
-  console.log("COLLECTION=", get(drive, ["collections", label], null))
   return(atom)
 }
 
@@ -173,19 +170,12 @@ export function useTrash (drive) {
   return useCollection(drive, "trash")
 }
 
-// TODO: useCollection instead, with no persistence
 export function useSelection (drive) {
-  const [selection, setSelection] = useState(new Set([]))
-  const select = (item, status) => {
-      console.log("SELECT:", !isSelected(item), item)
-      if (selection.has(item) && !status) {
-        setSelection(items => {items.delete(item); return new Set(items)})
-      } else {
-        setSelection(items => {return new Set(items.add(item))})
-      }
-    }
-  const isSelected = (item) => selection.has(item)
-  return [selection, select, isSelected]
+  const [selection, select, isSelected] = useCollection(drive, "selection")
+  const toggle = (item) => {
+    select(item, !isSelected(item))
+  }
+  return [selection, toggle, isSelected ]
 }
 
 export function useDriveItems(drive) {
