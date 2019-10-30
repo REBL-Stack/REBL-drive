@@ -26,6 +26,13 @@ class Drive {
   }
 }
 
+function insertDriveItems(drive, ...items) {
+  // insert one or more drive-item into the drive
+  // FIX: Items is array but should be map!
+  const {itemsAtom} = drive
+  swap(itemsAtom, (current) => [...current, ...items])
+}
+
 /* ================================================= */
 
 
@@ -50,6 +57,14 @@ function asDriveItem (root, path) {
   const pathname = concat(root, path).join("/")
   const item = new DriveItem({pathname, path: path.slice(0, -1), name})
   return (item)
+}
+
+function newFolder (drive, name) {
+  // creates and inserts a new folder drive item
+  const {root, dir} = drive
+  const pathname = concat(root, dir, [name]).join("/")
+  const item = new DriveItem({pathname, path: concat(root, dir), name, isDirectory: true})
+  insertDriveItems(drive, item)
 }
 
 function useStateAtom(atom) {
@@ -291,10 +306,19 @@ export function useDrive () {
       case "navigate":
         if (event.item) {
           const {root, dir, name} = event.item
-          setDir(concat(dir, [name]))
+          const destination = concat(dir, [name])
+          console.info("Navigate:", destination )
+          setDir(destination )
         } else {
+          const destination = event.dir
+          console.info("Navigate:", destination )
           setDir(event.dir)
         }
+        return (null)
+      case "createFolder":
+        const {name} = event
+        console.info("Create folder:", name)
+        newFolder(drive, name)
         return (null)
       default:
         console.warn("Unknown dispatch:", event.action)

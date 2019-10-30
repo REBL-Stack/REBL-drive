@@ -16,6 +16,7 @@ export default function App (props) {
   const { dir } = Object.assign({dir: ["img"]}, drive)
   const navigate = (payload) => dispatch({...payload, action: "navigate"})
   const upload = (files) => dispatch({action: "upload", files: files})
+  const createFolder = (name) => dispatch({action: "createFolder", name: name})
   return (
    <div className="App">
       {!signIn && !signOut && <div>Authenticating...</div>}
@@ -27,7 +28,8 @@ export default function App (props) {
             <Sidebar className="border-right bg-light">
               <div className="w-100 mt-4 mb-5 text-center">
                 <Action className="btn-primary mx-auto rounded"
-                        onUpload={upload}>
+                        createFolder={createFolder}
+                        uploadFiles={upload}>
                   <FontAwesomeIcon icon={faPlus}/>&nbsp;
                 </Action>
               </div>
