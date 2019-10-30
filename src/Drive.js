@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFolder, faFile, faStar } from '@fortawesome/free-solid-svg-icons'
+import { faFolder, faFile, faStar, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import filesize from 'filesize'
 import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
@@ -22,7 +22,6 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
       </td>
       <td>{date && date.toLocaleDateString(undefined, dateOptions)}</td>
       <td>{size && filesize(size, {round: 1})}</td>
-      <td><button onClick={deleteFile}>Delete</button></td>
     </tr> )
 }
 
@@ -36,7 +35,6 @@ function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
        </td>
        <td>{modified}</td>
        <td>{size}</td>
-       <td></td>
     </tr>
   )
 }
@@ -51,55 +49,65 @@ function ItemRow ({item, navigate, selected, onClick}) {
   )
 }
 
-export function FilesTable ({drive, items, navigate}) {
+export function FilesTable ({drive, items, navigate, pane}) {
   // Show a table of drive items, subset of those in the drive
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
-  const [selection, select, isSelected] = useSelection(drive)
+  const [selection, select, isSelected] = useSelection(drive, pane)
   return (
       <table className="table table-hover">
        <thead>
        <tr className="">
-         <th></th>
          <th>Name</th>
          <th>Modified</th>
          <th>Size</th>
-         <th>Actions</th>
        </tr>
        </thead>
        <tbody>
         {items && items.map((item) => {
           const selected = isSelected(item)
           const favorite = isFavorite(item)
-          return <ItemRow key={item.name} selected={selected} favorite={favorite} onClick={()=>select(item)} item={item} navigate={navigate}/>
-          })}
+          return (<ItemRow key={item.name} selected={selected} favorite={favorite} onClick={()=>select(item)} item={item} navigate={navigate}/>
+          )})}
        </tbody>
       </table>)
 }
 
 export default function Drive ({drive, navigate}) {
   const items = useDriveBranch(drive)
-  const [favorites, setFavorite, isFavorite] = useFavorites(drive)
-  const [selection, select, isSelected] = useSelection(drive)
   const [current, setCurrent] = useCurrent(drive)
+  const [selection, select, isSelected] = useSelection(drive)
+  const toggler = (getter, setter) =>
+     () => {
+      const item = selection[0]
+      const change = !getter(item)
+      selection.forEach((item) => {
+        setter(item, change)
+      })
+    }
+  const [favorites, setFavorite, isFavorite] = useFavorites(drive)
+  const [trashed, setTrashed, isTrashed] = useTrash(drive)
+  const toggleFavorite = toggler(isFavorite, setFavorite)
+  const toggleTrashed = toggler(isTrashed, setTrashed)
+  const activeItems = items.filter((item) => !isTrashed(item.pathname))
   return(
     <>
      <div className="d-flex justify-content-between">
        <Breadcrumb title="Drive" trail={current} onClick={navigate}/>
        <div>
          { !isEmpty(selection) &&
-           <button type="button" className="btn btn-light btn-rounded"
-             onClick={() => {
-               const item = selection[0]
-               const change = !isFavorite(item)
-               selection.forEach((item) => {
-                 setFavorite(item, change)
-               })
-             }}>
-             <FontAwesomeIcon icon={faStar}/>
-           </button>}
+           <>
+             <button type="button" className="btn btn-light btn-rounded"
+                   onClick={toggleFavorite}>
+              <FontAwesomeIcon icon={faStar}/>
+            </button>
+            <button type="button" className="btn btn-light btn-rounded"
+                    onClick={toggleTrashed}>
+              <FontAwesomeIcon icon={faTrash}/>
+            </button>
+          </>}
        </div>
      </div>
-     <FilesTable drive={drive} items={items} navigate={navigate}/>
+     <FilesTable drive={drive} items={activeItems} navigate={navigate}/>
     </>)
 }
 
@@ -109,7 +117,7 @@ export function Favorites ({drive}) {
   return (
     <>
       <nav>Favorites</nav>
-      <FilesTable drive={drive} items={items}/>
+      <FilesTable drive={drive} items={items} pane="favorites"/>
     </>)
 }
 
@@ -118,15 +126,16 @@ export function Shared ({drive}) {
   return (
     <>
       <nav>Shared</nav>
-      <FilesTable drive={drive} items={items}/>
+      <FilesTable drive={drive} items={items} pane="shared"/>
     </>)
 }
 
 export function Trash ({drive}) {
-  const [items] = useTrash(drive)
+  const [trashed] = useTrash(drive)
+  const items = useDriveItems(drive, trashed)
   return (
     <>
       <nav>Trash</nav>
-      <FilesTable drive={drive} items={items}/>
+      <FilesTable drive={drive} items={items} pane="trash"/>
     </>)
 }

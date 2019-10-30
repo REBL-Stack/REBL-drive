@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-import _, { isNull, isNil, concat, get, set, merge, isFunction, map, filter } from 'lodash'
+import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, map, filter } from 'lodash'
 import { Atom, swap, useAtom, deref} from "@dbeining/react-atom"
 
 class DriveItem {
@@ -178,18 +178,11 @@ function useCollectionAtom (drive, label) {
 
 function useCollection (drive, label) {
   // returns an array of keys in the collection, followed by a getter and setter
-  // const {root, dir} = drive
   const [collection, setCollection] = useCollectionAtom(drive, label)
   const setter = useCallback((id, value) => {
     setCollection( collection => ({...collection, [id]: value}))
-    /*
-    if (!status) {
-      setCollection( items => new Set([...items].filter( x => !(x == item))) )
-    } else {
-      setCollection( items => new Set([...items, item]) )
-    }*/
   }, [collection])
-  const getter = (id) => get(collection, id)
+  const getter = useCallback((id) => get(collection, id), [collection])
   return ([Array.from(Object.keys(collection)), setter, getter])
 }
 
@@ -205,8 +198,9 @@ export function useTrash (drive) {
   return useCollection(drive, "trash")
 }
 
-export function useSelection (drive) {
-  const [selection, select, isSelected] = useCollection(drive, "selection")
+export function useSelection (drive, pane) {
+  // pane is string
+  const [selection, select, isSelected] = useCollection(drive, "selection" + pane)
   const toggle = (item) => {
     select(item.pathname, !isSelected(item.pathname))
   }
@@ -245,11 +239,11 @@ export function useDriveBranch(drive) {
   const [state, setState] = useStateAtom(itemsAtom)
   console.log("ItemsAtom:", dir, itemsAtom, state)
   useEffect( () => {
-    if (files) { // FIX: useFiles returns [] initially but shouldn't
+    if (files && isEmpty(state)) { // FIX: useFiles returns [] initially but shouldn't
       const tree = files && groupFiles(files)
       setState(tree && asDriveItemsList(drive, tree))
     }
-  },[files])
+  },[files, state])
   return (state)
 }
 
