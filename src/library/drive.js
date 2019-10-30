@@ -16,13 +16,15 @@ class DriveItem {
   }
 }
 
+const dirpathDefault = ["img"]
+
 class Drive {
   root = [] // only relevant when using filesystem
-  dir: [] // current directory shown
+  current // current directory shown
   collections: {}
   itemsAtom // atom with id -> DriveItem
   constructor(obj) {
-    Object.assign(this, {itemsAtom: Atom.of([])}, obj)
+    Object.assign(this, {itemsAtom: Atom.of([]), current: Atom.of(dirpathDefault)}, obj)
   }
 }
 
@@ -61,7 +63,8 @@ function asDriveItem (root, path) {
 
 function newFolder (drive, name) {
   // creates and inserts a new folder drive item
-  const {root, dir} = drive
+  const {root, current} = drive
+  const dir = deref(current)
   const pathname = concat(root, dir, [name]).join("/")
   const item = new DriveItem({pathname, path: concat(root, dir), name, isDirectory: true})
   insertDriveItems(drive, item)
@@ -83,23 +86,22 @@ function useStateAtom(atom) {
 
 /* ================================================= */
 
-export function useFiles (dir) {
+function useFiles (dir) {
   // Files in a specific subpath
   const {userSession} = useBlockstack()
   const [files, setFiles] = useState()
+  const dirpath = dir && dir.join("/") + "/"
+  console.log("USE FILES:", dirpath)
   useEffect( () => {
-    if (dir) {
-      const dirpath = dir.join("/") + "/"
+    if (dirpath) {
       matchingFiles(userSession, dirpath).then(setFiles)
       // Fix: need to be able to cancel
     } else {
       setFiles(null)
     }
-  },[userSession, dir])
+  },[userSession, dirpath])
   return(files || [])
 }
-
-
 
 function groupReducer (obj, path) {
   if (path.includes("/")) {
@@ -224,7 +226,8 @@ export function useFavorite(driveItem) {
 
 function asDriveItemsList (drive, tree) {
   // tree is a map from names to subitems (if directory) or null if file
-  const {root, dir, itemsAtom} = drive
+  const {root, current, itemsAtom} = drive
+  const dir = deref(current)
   const convert = ([name, content]) => {
     const pathname = concat(root, dir).join("/") + "/" + name // + (content ? "/" : "")
     return (new DriveItem({pathname, root, dir: dir, name, isDirectory: content}))
@@ -236,10 +239,11 @@ function asDriveItemsList (drive, tree) {
 
 export function useDriveBranch(drive) {
   // OUT: Array with top level drive items for the current branch (specified by dir)
-  const {root, dir, itemsAtom} = drive
+  const {root, current, itemsAtom} = drive
+  const dir = deref(current)
   const files = useFiles(dir)
   const [state, setState] = useStateAtom(itemsAtom)
-  console.log("ItemsAtom:", itemsAtom, state)
+  console.log("ItemsAtom:", dir, itemsAtom, state)
   useEffect( () => {
     if (files) { // FIX: useFiles returns [] initially but shouldn't
       const tree = files && groupFiles(files)
@@ -258,7 +262,8 @@ export function useDriveItems (drive, ids) {
 }
 
 export function useUpload (drive) {
-  const {root, dir, itemsAtom } = drive || {}
+  const {root, current, itemsAtom } = drive || {}
+  const dir = deref(current)
   const dirpath = dir && (dir.join("/") + "/")
   const { userSession } = useBlockstack()
   const [files, setFiles] = useState()
@@ -288,14 +293,17 @@ export function useUpload (drive) {
   return [upload, uploadStatus]
 }
 
-const dirpathDefault = ["img"]
+export function useCurrent (drive) {
+    return useStateAtom(drive.current)
+}
 
-const driveAtom = Atom.of(new Drive({dir:dirpathDefault}))
+const driveAtom = Atom.of(new Drive())
 
 export function useDrive () {
   // interface and state for access to a drive
   const drive = useAtom(driveAtom)
-  const setDir = (dir) => swap(driveAtom, (drive => new Drive(merge({}, drive, {dir: dir}))))
+  const [dir, setDir] = useCurrent(drive)
+  // const setDir = (dir) => swap(driveAtom, (drive => new Drive(merge({}, drive, {dir: dir}))))
   const [upload, uploadStatus] = useUpload(drive)
   const dispatch = (event) => {
     console.log("Dispatch:", event)

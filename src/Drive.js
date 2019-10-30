@@ -4,7 +4,7 @@ import { faFolder, faFile, faStar } from '@fortawesome/free-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import filesize from 'filesize'
 import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
-         useDriveItems, useDriveItem, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
+         useDriveItems, useDriveItem, useCurrent, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
 
 function FileRow ({dir, name, item, favorite, selected, onClick}) {
@@ -80,10 +80,11 @@ export default function Drive ({drive, navigate}) {
   const items = useDriveBranch(drive)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const [selection, select, isSelected] = useSelection(drive)
+  const [current, setCurrent] = useCurrent(drive)
   return(
     <>
      <div className="d-flex justify-content-between">
-       <Breadcrumb title="Drive" trail={drive.dir} onClick={navigate}/>
+       <Breadcrumb title="Drive" trail={current} onClick={navigate}/>
        <div>
          { !isEmpty(selection) &&
            <button type="button" className="btn btn-light btn-rounded"
