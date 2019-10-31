@@ -40,9 +40,10 @@ export default function App (props) {
                 <MenuItem target="/favorites">
                   <FontAwesomeIcon icon={faStar}/>Favorites
                 </MenuItem>
+                {false &&
                 <MenuItem target="/shared">
                   <FontAwesomeIcon icon={faShare}/>Shared
-                </MenuItem>
+                </MenuItem>}
                 <MenuItem target="/trash">
                   <FontAwesomeIcon icon={faTrash}/>Trash
                 </MenuItem>
