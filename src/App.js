@@ -30,7 +30,8 @@ export default function App (props) {
                 <Action className="btn-primary mx-auto rounded"
                         createFolder={createFolder}
                         uploadFiles={upload}>
-                  <FontAwesomeIcon icon={faPlus}/>&nbsp;
+                  <FontAwesomeIcon icon={faPlus}/>
+                  <span className="ml-3 mr-2">New</span>
                 </Action>
               </div>
               <Menu>

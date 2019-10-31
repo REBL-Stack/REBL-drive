@@ -116,25 +116,6 @@ export function ActionBar (props) {
     </div>
   )
 }
-
-export default function Drive ({drive, navigate}) {
-  const items = useDriveBranch(drive)
-  const [current, setCurrent] = useCurrent(drive)
-  const [trashed, setTrashed, isTrashed] = useTrash(drive)
-  const activeItems = items.filter((item) => !isTrashed(item.pathname))
-  return(
-    <>
-     <div className="d-flex justify-content-between">
-       <Breadcrumb title="Drive" trail={current} onClick={navigate}/>
-       <ActionBar drive={drive} pane={null}>
-         <ToggleTrash drive={drive}/>
-         <ToggleFavorite drive={drive}/>
-       </ActionBar>
-     </div>
-     <FilesTable drive={drive} items={activeItems} navigate={navigate}/>
-    </>)
-}
-
 export function Favorites ({drive}) {
   const [favorites, setFavorite, getFavorite] = useFavorites(drive)
   const items = useDriveItems(drive, favorites)
@@ -161,5 +142,24 @@ export function Trash ({drive}) {
     <>
       <nav>Trash</nav>
       <FilesTable drive={drive} items={items} pane="trash"/>
+    </>)
+}
+
+
+export default function Drive ({drive, navigate}) {
+  const items = useDriveBranch(drive)
+  const [current, setCurrent] = useCurrent(drive)
+  const [trashed, setTrashed, isTrashed] = useTrash(drive)
+  const activeItems = items.filter((item) => !isTrashed(item.pathname))
+  return(
+    <>
+     <div className="d-flex justify-content-between">
+       <Breadcrumb title="Drive" trail={current} onClick={navigate}/>
+       <ActionBar drive={drive} pane={null}>
+         <ToggleTrash drive={drive}/>
+         <ToggleFavorite drive={drive}/>
+       </ActionBar>
+     </div>
+     <FilesTable drive={drive} items={activeItems} navigate={navigate}/>
     </>)
 }
