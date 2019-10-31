@@ -11,3 +11,9 @@
 .Sidebar {
   min-width: 20em;
 }
+
+.Landing {
+  max-width: 40em;
+  margin: auto;
+  font-size: larger;
+}

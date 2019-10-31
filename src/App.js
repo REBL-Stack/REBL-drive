@@ -1,5 +1,5 @@
-import React from 'react'
-import { useBlockstack} from 'react-blockstack'
+import React, { useEffect } from 'react'
+import { useBlockstack, useFile} from 'react-blockstack'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHdd, faStar, faShare, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -17,6 +17,14 @@ export default function App (props) {
   const navigate = (payload) => dispatch({...payload, action: "navigate"})
   const upload = (files) => dispatch({action: "upload", files: files})
   const createFolder = (name) => dispatch({action: "createFolder", name: name})
+  const [history, setHistory] = useFile("history")
+  useEffect( () => {
+    var d = new Date()
+    console.log("HISTORY:", !!userData, !!setHistory, d.toString())
+    if (userData && setHistory) {
+      setHistory("" + d.toString())
+    }
+  },[userData, setHistory])
   return (
    <div className="App">
       {!signIn && !signOut && <div>Authenticating...</div>}
