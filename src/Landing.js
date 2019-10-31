@@ -7,8 +7,11 @@ export default function Landing (props) {
     <div className="Landing">
       <h1 className="landing-heading text-center m-5">REBL Cloud</h1>
       <p className="alert alert-dark text-center">
-      Coming soon: A design toolkit for Blockstack app development, providing React components
-      and hooks to implement file managements. Sign in below to test out an app
+      Coming soon: A design toolkit for Blockstack app development
+      based on <a href="https://rebl.run">React-Blockstack</a>,
+      providing React components
+      and React hooks to implement file management in Blockstack apps.
+      Sign in below to test out an app
       demonstrating&nbsp;the&nbsp;toolkit.
       </p>
       <div className="lead text-center mt-5">

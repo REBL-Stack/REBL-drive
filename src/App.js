@@ -17,14 +17,13 @@ export default function App (props) {
   const navigate = (payload) => dispatch({...payload, action: "navigate"})
   const upload = (files) => dispatch({action: "upload", files: files})
   const createFolder = (name) => dispatch({action: "createFolder", name: name})
-  const [history, setHistory] = useFile("history")
+  const [history, setHistory] = useFile("config")
   useEffect( () => {
     var d = new Date()
-    console.log("HISTORY:", !!userData, !!setHistory, d.toString())
     if (userData && setHistory) {
       setHistory("" + d.toString())
     }
-  },[userData, setHistory])
+  },[!!userData, !!setHistory])
   return (
    <div className="App">
       {!signIn && !signOut && <div>Authenticating...</div>}
@@ -61,10 +60,11 @@ export default function App (props) {
           </ColAuto>
           <Col>
             <Navbar className="navbar-dark bg-light">
+              { false &&
               <form className="form-inline my-2 my-lg-0">
                 <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
                 <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-              </form>
+              </form>}
               <Auth/>
             </Navbar>
             <main className="bg-light">
