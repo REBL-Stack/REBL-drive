@@ -1,1 +1,3 @@
+/media/* /media/:splat
+/media/app-icon/* /media/app-icon/:splat
 /* /index.html 200
