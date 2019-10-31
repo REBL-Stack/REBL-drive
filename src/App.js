@@ -2,13 +2,26 @@ import React, { useEffect } from 'react'
 import { useBlockstack, useFile} from 'react-blockstack'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHdd, faStar, faShare, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faHdd, faStar, faShare, faTrash, faPlus, faHeart, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
 import { useDrive } from './library/drive'
 import Landing from './Landing'
 import Drive, {Favorites, Shared, Trash} from './Drive'
 import Auth from './Auth'
 import Action from './Action'
+import { config } from './config'
+
+function Footer (props) {
+  return (
+  <footer className="text-center bg-dark">
+    <p>Learn more about encryption with the <a href="https://dcrypt.app"><i>d</i>Crypt</a> app.</p>
+    <p className="m-0 mt-2">
+      Made with <FontAwesomeIcon icon={faHeart}/> in San Francisco</p>
+    <p className="m-0">
+      <a href="mailto:hello@dcrypt.app">hello@dcrypt.app</a>
+    </p>
+  </footer>)
+}
 
 export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
@@ -26,11 +39,13 @@ export default function App (props) {
   },[!!userData, !!setHistory])
   return (
    <div className="App">
-      {!signIn && !signOut && <div>Authenticating...</div>}
+    <div>
+      {!signIn && !signOut && <div>...</div>}
       {signIn && <Landing />}
       {signOut &&
       <Router>
         <Row className="no-gutters">
+          {config.sidebar &&
           <ColAuto>
             <Sidebar className="border-right bg-light">
               <div className="w-100 mt-4 mb-5 text-center">
@@ -57,9 +72,16 @@ export default function App (props) {
                 </MenuItem>
               </Menu>
             </Sidebar>
-          </ColAuto>
+          </ColAuto>}
           <Col>
-            <Navbar className="navbar-dark bg-light">
+            <Navbar className="navbar-dark bg-dark">
+              {!config.sidebar &&
+                 <a className="navbar-brand" href="/#">
+                   <span className="text-primary mr-2">
+                     <FontAwesomeIcon icon={faDharmachakra}/>
+                   </span>
+                    <i>d</i>Crypt Vault
+                 </a>}
               <form className="form-inline my-2 my-lg-0">
                 { false &&
                   <>
@@ -67,6 +89,13 @@ export default function App (props) {
                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                   </> }
               </form>
+              {!config.sidebar &&
+              <Action className="btn-primary mx-auto rounded"
+                      createFolder={createFolder}
+                      uploadFiles={upload}>
+                  <FontAwesomeIcon icon={faPlus}/>
+                  <span className="ml-3 mr-2"></span>
+              </Action>}
               <Auth/>
             </Navbar>
             <main className="bg-light">
@@ -81,9 +110,8 @@ export default function App (props) {
           </Col>
         </Row>
       </Router>}
-      <footer>
-
-      </footer>
+      </div>
+      <Footer/>
   </div>
   )
 }

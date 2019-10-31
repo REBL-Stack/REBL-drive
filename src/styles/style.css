@@ -17,3 +17,7 @@
   margin: auto;
   font-size: larger;
 }
+
+.App > div {
+  min-height: 100vh;
+}
