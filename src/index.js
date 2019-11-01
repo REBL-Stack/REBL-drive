@@ -13,7 +13,8 @@ import'./styles/style.css'
 // Activate bootstrap actions
 import $ from 'jquery'
 // import Popper from 'popper.js'
-import 'bootstrap/dist/js/bootstrap.bundle.min'
+// import 'bootstrap/dist/js/bootstrap.bundle.min'
+import bootstrap from 'bootswatch/dist/flatly/bootstrap.css'
 
 const appConfig = new AppConfig(['store_write', 'publish_data'])
 ReactBlockstack({appConfig})
