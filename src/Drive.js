@@ -6,6 +6,7 @@ import filesize from 'filesize'
 import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
          useDriveItems, useDriveItem, useCurrent, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
 import Breadcrumb from "./library/Breadcrumb"
+import config from "./config"
 
 function FileRow ({dir, name, item, favorite, selected, onClick}) {
   const meta = useFileMeta(item)
@@ -151,10 +152,11 @@ export default function Drive ({drive, navigate}) {
   const [current, setCurrent] = useCurrent(drive)
   const [trashed, setTrashed, isTrashed] = useTrash(drive)
   const activeItems = items.filter((item) => !isTrashed(item.pathname))
+  const title = drive.title || "Drive"
   return(
     <>
      <div className="d-flex justify-content-between">
-       <Breadcrumb title="Drive" trail={current} onClick={navigate}/>
+       <Breadcrumb title={title} trail={current} onClick={navigate}/>
        <ActionBar drive={drive} pane={null}>
          <ToggleTrash drive={drive}/>
          <ToggleFavorite drive={drive}/>

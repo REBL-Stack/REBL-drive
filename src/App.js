@@ -13,7 +13,7 @@ import Action from './Action'
 export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
   const [drive, dispatch] = useDrive()
-  const { dir } = Object.assign({dir: ["img"]}, drive)
+  const { dir } = drive
   const navigate = (payload) => dispatch({...payload, action: "navigate"})
   const upload = (files) => dispatch({action: "upload", files: files})
   const createFolder = (name) => dispatch({action: "createFolder", name: name})

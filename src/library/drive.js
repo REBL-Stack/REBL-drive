@@ -16,10 +16,11 @@ class DriveItem {
   }
 }
 
-const dirpathDefault = ["img"]
+const rootDefault = ["img"] // prefix under which files are kept
+const dirpathDefault = []
 
 class Drive {
-  root = [] // only relevant when using filesystem
+  root = rootDefault // only relevant when using filesystem
   current // current directory shown
   collections: {}
   itemsAtom // atom with id -> DriveItem
@@ -257,12 +258,13 @@ export function useDriveItems (drive, ids) {
 
 export function useUpload (drive) {
   const {root, current, itemsAtom } = drive || {}
-  const dir = deref(current)
-  const dirpath = dir && (dir.join("/") + "/")
+  const dir = deref(current) // useCurrent instead?
+  const dirpath = dir && (concat(root, dir).join("/") + "/")
   const { userSession } = useBlockstack()
   const [files, setFiles] = useState()
   const [state, setState] = useStateAtom(itemsAtom)
   const putFile = userSession.putFile
+  console.log("DIRPATH:", dirpath, root, dir)
   useEffect( () => {
     if (files) {
       console.log("FILES:", files)
@@ -288,6 +290,7 @@ export function useUpload (drive) {
 }
 
 export function useCurrent (drive) {
+    // Subpath currently in view (excluding root prefix)
     return useStateAtom(drive.current)
 }
 
