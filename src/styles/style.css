@@ -17,3 +17,7 @@
   margin: auto;
   font-size: larger;
 }
+
+.Sidebar ul li {
+  border-radius: 10px;
+}

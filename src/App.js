@@ -26,7 +26,7 @@ export default function App (props) {
   },[!!userData, !!setHistory])
   return (
    <div className="App">
-      {!signIn && !signOut && <div>Authenticating...</div>}
+      {!signIn && !signOut && <div>...</div>}
       {signIn && <Landing />}
       {signOut &&
       <Router>
