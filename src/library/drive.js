@@ -8,7 +8,7 @@ class DriveItem {
   // Represents a file or directory in a Drive
   // root: [] // only relevant when using filesystem, better if filepath
   pathname /// name in gaia, required for files, used as id for now
-  dir: [] // path in virtual drive hierarchy, parent, excluding name
+  path: [] // path in virtual drive hierarchy, parent, excluding name
   name: "untitled"
   isDirectory: false
   constructor(obj) {
@@ -69,7 +69,7 @@ function newFolder (drive, name) {
   const {root, current} = drive
   const dir = deref(current)
   const pathname = concat(root, dir, [name]).join("/")
-  const item = new DriveItem({pathname, path: concat(root, dir), name, isDirectory: true})
+  const item = new DriveItem({pathname, path: dir, name, isDirectory: true})
   insertDriveItems(drive, item)
 }
 
@@ -227,7 +227,7 @@ function asDriveItemsList (drive, tree) {
   const dir = deref(current)
   const convert = ([name, content]) => {
     const pathname = concat(root, dir).join("/") + "/" + name // + (content ? "/" : "")
-    return (new DriveItem({pathname, root, dir: dir, name, isDirectory: content}))
+    return (new DriveItem({pathname, root, path: dir, name, isDirectory: content}))
   }
   const entriesArray = Array.from(tree.entries())
   const out = entriesArray.map(convert)
@@ -256,7 +256,7 @@ export function useDriveBranch(drive) {
   const [dir, setDir] = useCurrent(drive) // deref(current) // useCurrent instead?
   const [items, setItems] = useStateAtom(itemsAtom)
   console.log("Branch Items:", dir, items)
-  const branchItems = items && filter(items, (item) => (item.dir == dir))
+  const branchItems = items && filter(items, (item) => (item.path == dir))
   return (branchItems)
 }
 
@@ -270,7 +270,7 @@ export function useDriveItems (drive, ids) {
 
 export function useUpload (drive) {
   const {root, current, itemsAtom } = drive || {}
-  const dir = deref(current) // useCurrent instead?
+  const [dir, setDir] = useCurrent(drive)
   const dirpath = dir && (concat(root, dir).join("/") + "/")
   const { userSession } = useBlockstack()
   const [files, setFiles] = useState()
@@ -324,14 +324,14 @@ export function useDrive () {
         return null
       case "navigate":
         if (event.item) {
-          const {root, dir, name} = event.item
-          const destination = concat(dir, [name])
+          const {root, path, name} = event.item
+          const destination = concat(path, [name])
           console.info("Navigate:", destination )
           setDir(destination )
         } else {
-          const destination = event.dir
+          const destination = event.path
           console.info("Navigate:", destination )
-          setDir(event.dir)
+          setDir(destination)
         }
         return (null)
       case "createFolder":
