@@ -18,6 +18,7 @@ export default function App (props) {
   const upload = (files) => dispatch({action: "upload", files: files})
   const createFolder = (name) => dispatch({action: "createFolder", name: name})
   const [history, setHistory] = useFile("config")
+  const enableCreateFolder = false
   useEffect( () => {
     var d = new Date()
     if (userData && setHistory) {
@@ -33,6 +34,7 @@ export default function App (props) {
         <Row className="no-gutters">
           <ColAuto>
             <Sidebar className="border-right bg-light">
+              { enableCreateFolder &&
               <div className="w-100 mt-4 mb-5 text-center">
                 <Action className="btn-primary mx-auto rounded"
                         createFolder={createFolder}
@@ -40,7 +42,7 @@ export default function App (props) {
                   <FontAwesomeIcon icon={faPlus}/>
                   <span className="ml-3 mr-2">New</span>
                 </Action>
-              </div>
+              </div>}
               <Menu>
                 <MenuItem target="/drive">
                   <FontAwesomeIcon icon={faHdd}/>My Drive
