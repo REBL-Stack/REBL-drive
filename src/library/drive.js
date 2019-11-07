@@ -234,20 +234,30 @@ function asDriveItemsList (drive, tree) {
   return out
 }
 
-export function useDriveBranch(drive) {
-  // OUT: Array with top level drive items for the current branch (specified by dir)
-  const {root, current, itemsAtom} = drive
-  const dir = deref(current)
-  const files = useFiles(dir)
-  const [state, setItems] = useStateAtom(itemsAtom)
-  console.log("ItemsAtom:", dir, itemsAtom, state)
+export function useLoadDriveItems(drive) {
+  // Initialize all drive items from the files in the root
+  // Should ultimately be eliminated or just provide backup on failure
+  const {root, itemsAtom} = drive
+  const files = useFiles(root)
+  const [items, setItems] = useStateAtom(itemsAtom)
+  console.log("Load Drive Items:", root, itemsAtom, items)
   useEffect( () => {
-    if (files && isEmpty(state)) { // FIX: useFiles returns [] initially but shouldn't
+    if (files) {
       const tree = files && groupFiles(files)
       setItems(tree && asDriveItemsList(drive, tree))
     }
-  },[files, state])
-  return (state)
+  },[files])
+  return (items)
+}
+
+export function useDriveBranch(drive) {
+  // OUT: Array with top level drive items for the current branch (specified by dir)
+  const {current, itemsAtom} = drive
+  const [dir, setDir] = useCurrent(drive) // deref(current) // useCurrent instead?
+  const [items, setItems] = useStateAtom(itemsAtom)
+  console.log("Branch Items:", dir, items)
+  const branchItems = items && filter(items, (item) => (item.dir == dir))
+  return (branchItems)
 }
 
 export function useDriveItems (drive, ids) {
@@ -304,6 +314,8 @@ export function useDrive () {
   const [dir, setDir] = useCurrent(drive)
   // const setDir = (dir) => swap(driveAtom, (drive => new Drive(merge({}, drive, {dir: dir}))))
   const [upload, uploadStatus] = useUpload(drive)
+  const items = useLoadDriveItems(drive)
+  console.log("Loaded drive items:", items)
   const dispatch = (event) => {
     console.log("Dispatch:", event)
     switch (event.action) {
