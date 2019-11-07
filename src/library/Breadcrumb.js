@@ -6,11 +6,11 @@ export default function Breadcrumb ({trail, onClick, title}) {
       <ul className="breadcrumb">
         {title &&
          <li className="breadcrumb-item breadcrumb-title">
-           <a href="#" onClick={ () => onClick([])}>{title}</a>
+           <a href="#" onClick={ () => onClick({path: []})}>{title}</a>
          </li>}
         {[...Array(trail.length).keys()].map( n =>
           <li className="breadcrumb-item">
-            {(n < trail.length - 1) ? <a href="#" onClick={() => onClick({dir: trail.slice(0, n+1)})}>{trail[n]}</a> : trail[n]}
+            {(n < trail.length - 1) ? <a href="#" onClick={() => onClick({path: trail.slice(0, n+1)})}>{trail[n]}</a> : trail[n]}
           </li>)}
       </ul>
     </nav>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, map, filter } from 'lodash'
+import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, isEqual, map, filter } from 'lodash'
 import { Atom, swap, useAtom, deref} from "@dbeining/react-atom"
 
 class DriveItem {
@@ -255,8 +255,9 @@ export function useDriveBranch(drive) {
   const {current, itemsAtom} = drive
   const [dir, setDir] = useCurrent(drive) // deref(current) // useCurrent instead?
   const [items, setItems] = useStateAtom(itemsAtom)
-  console.log("Branch Items:", dir, items)
-  const branchItems = items && filter(items, (item) => (item.path == dir))
+  // careful with equality, array may be equal even with different order in lodash....
+  const branchItems = items && filter(items, (item) => (isEqual(item.path, dir) || item.path == dir))
+  console.log("Branch Items:", branchItems, dir, items)
   return (branchItems)
 }
 
