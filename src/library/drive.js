@@ -16,7 +16,7 @@ class DriveItem {
   }
 }
 
-const rootDefault = ["img"] // prefix under which files are kept
+const rootDefault = ["drive"] // prefix under which files are kept
 const dirpathDefault = []
 
 class Drive {
@@ -37,7 +37,7 @@ function insertDriveItems(drive, ...items) {
 }
 
 /* ================================================= */
-
+// File System Access
 
 function matchingFiles (userSession, match) {
   // promise with list of files starting with the path
@@ -53,6 +53,8 @@ function matchingFiles (userSession, match) {
   }
   return (new Promise(resolveFiles))
 }
+
+/* ================================================= */
 
 function asDriveItem (root, path) {
   // path is a list of steps with the name being last
@@ -220,7 +222,7 @@ export function useFavorite(driveItem) {
 /* ============================================================== */
 
 function asDriveItemsList (drive, tree) {
-  // tree is a map from names to subitems (if directory) or null if file
+  // tree is a map from names to: subitems (if directory), or null if file
   const {root, current, itemsAtom} = drive
   const dir = deref(current)
   const convert = ([name, content]) => {
@@ -237,12 +239,12 @@ export function useDriveBranch(drive) {
   const {root, current, itemsAtom} = drive
   const dir = deref(current)
   const files = useFiles(dir)
-  const [state, setState] = useStateAtom(itemsAtom)
+  const [state, setItems] = useStateAtom(itemsAtom)
   console.log("ItemsAtom:", dir, itemsAtom, state)
   useEffect( () => {
     if (files && isEmpty(state)) { // FIX: useFiles returns [] initially but shouldn't
       const tree = files && groupFiles(files)
-      setState(tree && asDriveItemsList(drive, tree))
+      setItems(tree && asDriveItemsList(drive, tree))
     }
   },[files, state])
   return (state)
@@ -252,8 +254,8 @@ export function useDriveItems (drive, ids) {
   // IN: List of ids for drive items to return, or nil for all
   // OUT: Array of matching drive items, in same order
   const {itemsAtom} = drive
-  const [state, setState] = useStateAtom(itemsAtom)
-  return (isNil(ids) ? state : map(ids, (id) => _.find(state, (item) => (item.pathname == id))))
+  const [items, setItems] = useStateAtom(itemsAtom)
+  return (isNil(ids) ? items : map(ids, (id) => _.find(items, (item) => (item.pathname == id))))
 }
 
 export function useUpload (drive) {
@@ -262,22 +264,22 @@ export function useUpload (drive) {
   const dirpath = dir && (concat(root, dir).join("/") + "/")
   const { userSession } = useBlockstack()
   const [files, setFiles] = useState()
-  const [state, setState] = useStateAtom(itemsAtom)
+  const [state, setItems] = useStateAtom(itemsAtom)
   const putFile = userSession.putFile
   console.log("DIRPATH:", dirpath, root, dir)
   useEffect( () => {
     if (files) {
       console.log("FILES:", files)
       files.forEach( (file) => {
-        const name = dirpath + file.name
+        const pathname = dirpath + file.name
         const reader = new FileReader()
         reader.onload = () => {
           const content = reader.result
-          putFile(name, content)
+          putFile(pathname, content)
           const tree = new Map([])
-          tree.set(name, null)
+          tree.set(pathname, null)
           const extra = asDriveItemsList(drive, tree)
-          setState((items) => [...items, ...extra])
+          setItems((items) => [...items, ...extra])
         }
       reader.readAsArrayBuffer(file)
       })
