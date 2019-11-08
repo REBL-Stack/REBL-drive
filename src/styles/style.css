@@ -28,10 +28,11 @@ main {
 
 main .pane-heading {
   min-height: 4.5em;
+  font-weight: bold;
 }
 
 main .pane-heading h4 {
   margin-left: 0.75rem;
   padding-top: 0.75rem;
-  font-size: 1em;
+  font-size: 1.5em;
 }
