@@ -38,8 +38,8 @@ export default function App (props) {
         <Row className="no-gutters">
           <ColAuto>
             <Sidebar className="border-right">
-              <div className="w-100 mt-4 mb-5 text-center">
-                <Action className="btn-primary mx-auto rounded"
+              <div className="w-100 mt-4 mb-5 ml-5 text-left">
+                <Action className="btn-outline-primary mx-auto rounded-button-circle"
                         createFolder={false && createFolder}
                         uploadFiles={upload}>
                   <FontAwesomeIcon icon={faPlus}/>
