@@ -34,7 +34,6 @@ export default function App (props) {
       {!signIn && !signOut && <div>...</div>}
       {signIn && <Landing />}
       {signOut &&
-      <Router>
         <Row className="no-gutters">
           <ColAuto>
             <Sidebar className="border-right">
@@ -86,8 +85,7 @@ export default function App (props) {
               </ErrorBoundary>
             </main>
           </Col>
-        </Row>
-      </Router>}
+        </Row>}
       <footer>
 
       </footer>
