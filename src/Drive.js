@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile, faStar, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { isEmpty } from 'lodash'
+import { isEmpty, drop } from 'lodash'
 import filesize from 'filesize'
 import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
          useDriveItems, useDriveItem, useCurrent, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
@@ -46,11 +46,11 @@ export function ToggleFavorite (props) {
 }
 
 export function ActionBar (props) {
-  const {drive, pane, children} = props
+  const {drive, pane, children, className} = props
   const [selection, select, isSelected] = useSelection(drive, pane)
   console.log("SELECTION:", selection, !isEmpty(selection))
   return (
-    <div className="ActionBar">
+    <div className={["ActionBar", className].join(" ")}>
       {!isEmpty(selection) && children}
     </div>
   )
@@ -92,6 +92,11 @@ export function Trash ({drive}) {
     </>)
 }
 
+function useDrivePath(drive, location) {
+  const trail = location && location.pathname && location.pathname.split('/')
+  const path = trail && drop(trail, 2).map(decodeURIComponent)
+  return(path || [])
+}
 
 export default function Drive ({drive, navigate}) {
   const items = useDriveBranch(drive)
@@ -104,7 +109,7 @@ export default function Drive ({drive, navigate}) {
     <>
      <div className="pane-heading d-flex justify-content-between">
        <Breadcrumb title={title} trail={current} onClick={navigate}/>
-       <ActionBar drive={drive} pane={null}>
+       <ActionBar className="mr-4" drive={drive} pane={null}>
          <ToggleTrash drive={drive}/>
          <ToggleFavorite drive={drive}/>
        </ActionBar>
