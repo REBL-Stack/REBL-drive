@@ -184,7 +184,7 @@ function useCollection (drive, label, removeFalsy) {
   const [collection, setCollection] = useCollectionAtom(drive, label)
   const setter = useCallback((id, value) => {
     setCollection( collection => (removeFalsy && !value)
-                                 ? _.omitBy(collection, id)
+                                 ? _.omit(collection, id)
                                  : ({...collection, [id]: value}))
   }, [collection])
   const getter = useCallback((id) => get(collection, id), [collection])
