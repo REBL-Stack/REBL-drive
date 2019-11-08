@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolderPlus, faFileUpload } from '@fortawesome/free-solid-svg-icons'
 import {fromEvent} from 'file-selector'
 
-export default function ActionButton (props) {
+export default function ActionSelector (props) {
   const {className, uploadFiles, createFolder} = props
   const fileUploader = useRef(null)
   const folderNameRef = useRef(null)

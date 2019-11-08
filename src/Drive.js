@@ -10,6 +10,7 @@ import config from "./config"
 import FilesTable from './Table'
 import ActionBar, {ToggleTrash, ToggleFavorite, DownloadAction} from './ActionBar'
 
+const kind = config.kind
 
 export function Favorites ({drive, navigate}) {
   const [favorites, setFavorite, getFavorite] = useFavorites(drive)
@@ -53,9 +54,12 @@ export default function Drive ({drive, navigate}) {
      <div className="pane-heading d-flex justify-content-between">
        <Breadcrumb title={title} trail={current} onClick={navigate}/>
        <ActionBar className="mr-4" drive={drive} pane={null}>
-          {false && <DownloadAction drive={drive}/>}
-         <ToggleTrash drive={drive}/>
-         <ToggleFavorite drive={drive}/>
+         {false &&
+          <DownloadAction drive={drive}/>}
+         {(kind != 'vault') &&
+          <ToggleTrash drive={drive}/>}
+         {(kind != 'vault') &&
+          <ToggleFavorite drive={drive}/>}
        </ActionBar>
      </div>
      <FilesTable drive={drive} items={activeItems} navigate={navigate} isFavorite={isFavorite}/>

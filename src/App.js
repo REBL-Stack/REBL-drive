@@ -9,9 +9,11 @@ import Landing from './Landing'
 import Drive, {Favorites, Shared} from './Drive'
 import Trash from './Trash'
 import Auth from './Auth'
-import Action from './Action'
+import ActionSelector from './ActionSelector'
 import ErrorBoundary from './ErrorBoundary'
 import configuration from './config' // FIX: Conflicting naming with user config
+
+const app = configuration.kind
 
 function Footer (props) {
   return (
@@ -35,7 +37,8 @@ export default function App (props) {
     history && history.push("/drive")
   }
   const upload = (files) => dispatch({action: "upload", files: files})
-  const createFolder = (name) => dispatch({action: "createFolder", name: name})
+  const createFolder = (app != 'vault') && false &&
+                       ((name) => dispatch({action: "createFolder", name: name}))
   const [config, setConfig] = useFile("config")
   useEffect( () => {
     var d = new Date()
@@ -53,12 +56,13 @@ export default function App (props) {
           <ColAuto>
             <Sidebar className="border-right">
               <div className="w-100 mt-4 mb-5 ml-5 text-left">
-                <Action className="btn-outline-primary btn-lg mx-auto rounded-button-circle"
-                        createFolder={false && createFolder}
-                        uploadFiles={upload}>
+                <ActionSelector
+                     className="btn-outline-primary btn-lg mx-auto rounded-button-circle"
+                     createFolder={createFolder}
+                     uploadFiles={upload}>
                   <FontAwesomeIcon icon={faPlus}/>
                   <span className="ml-3 mr-2">New</span>
-                </Action>
+                </ActionSelector>
               </div>
               <Menu>
                 <MenuItem target="/drive">
@@ -94,12 +98,12 @@ export default function App (props) {
                   </> }
               </form>
               {!configuration.sidebar &&
-              <Action className="btn-primary mx-auto rounded"
-                      createFolder={createFolder}
-                      uploadFiles={upload}>
+              <ActionSelector className="btn-primary mx-auto rounded"
+                              createFolder={createFolder}
+                              uploadFiles={upload}>
                   <FontAwesomeIcon icon={faPlus}/>
                   <span className="ml-3 mr-2"></span>
-              </Action>}
+              </ActionSelector>}
               <Auth/>
             </Navbar>
             <main className="bg-light">

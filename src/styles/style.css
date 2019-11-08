@@ -69,3 +69,7 @@ main table td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.ActionSelector .dropdown-menu {
+  min-height: 4em;
+}

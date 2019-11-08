@@ -1,5 +1,5 @@
 const config = ({
-  app: process.env.REACT_APP,
+  kind: process.env.REACT_APP_KIND,
   title: process.env.REACT_APP_TITLE
 })
 
