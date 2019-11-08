@@ -6,7 +6,8 @@ import { faHdd, faStar, faShare, faTrash, faPlus } from '@fortawesome/free-solid
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
 import { useDrive } from './library/drive'
 import Landing from './Landing'
-import Drive, {Favorites, Shared, Trash} from './Drive'
+import Drive, {Favorites, Shared} from './Drive'
+import Trash from './Trash'
 import Auth from './Auth'
 import Action from './Action'
 import ErrorBoundary from './ErrorBoundary'
