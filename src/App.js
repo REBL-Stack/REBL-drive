@@ -40,7 +40,7 @@ export default function App (props) {
             <Sidebar className="border-right">
               <div className="w-100 mt-4 mb-5 text-center">
                 <Action className="btn-primary mx-auto rounded"
-                        createFolder={createFolder}
+                        createFolder={false && createFolder}
                         uploadFiles={upload}>
                   <FontAwesomeIcon icon={faPlus}/>
                   <span className="ml-3 mr-2">New</span>

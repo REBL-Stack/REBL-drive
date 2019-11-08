@@ -32,6 +32,8 @@ export default function ActionButton (props) {
             { props.children }
         </button>
         <div className="dropdown-menu">
+         {createFolder &&
+          <>
           <a className="dropdown-item" href="#">
             <div>
               <FontAwesomeIcon icon={faFolderPlus}/>
@@ -46,6 +48,7 @@ export default function ActionButton (props) {
             </div>
           </a>
           <div className="dropdown-divider"></div>
+          </>}
           <a className="dropdown-item" onClick={ uploadFile }>
             <FontAwesomeIcon icon={faFileUpload}/>
             <span className="ml-2">Upload File</span>
