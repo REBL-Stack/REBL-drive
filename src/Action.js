@@ -27,7 +27,7 @@ export default function ActionButton (props) {
       <>
         <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
         <button ref={dropdownToggleRef}
-                className={["btn dropdown-toggle", className].join(" ")}
+                className={["btn btn-primary dropdown-toggle", className].join(" ")}
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             { props.children }
         </button>
