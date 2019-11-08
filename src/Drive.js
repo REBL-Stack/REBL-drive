@@ -122,7 +122,9 @@ export function Favorites ({drive}) {
   const items = useDriveItems(drive, favorites)
   return (
     <>
-      <nav>Favorites</nav>
+      <div className="pane-heading">
+        <h4>Favorites</h4>
+      </div>
       <FilesTable drive={drive} items={items} pane="favorites"/>
     </>)
 }
@@ -131,7 +133,9 @@ export function Shared ({drive}) {
   const [items] = useShared(drive)
   return (
     <>
-      <nav>Shared</nav>
+      <div className="pane-heading">
+        <h4>Shared</h4>
+      </div>
       <FilesTable drive={drive} items={items} pane="shared"/>
     </>)
 }
@@ -141,7 +145,9 @@ export function Trash ({drive}) {
   const items = useDriveItems(drive, trashed)
   return (
     <>
-      <nav>Trash</nav>
+      <div className="pane-heading">
+        <h4>Trash</h4>
+      </div>
       <FilesTable drive={drive} items={items} pane="trash"/>
     </>)
 }
@@ -155,7 +161,7 @@ export default function Drive ({drive, navigate}) {
   const title = drive.title || "Drive"
   return(
     <>
-     <div className="d-flex justify-content-between">
+     <div className="pane-heading d-flex justify-content-between">
        <Breadcrumb title={title} trail={current} onClick={navigate}/>
        <ActionBar drive={drive} pane={null}>
          <ToggleTrash drive={drive}/>

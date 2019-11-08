@@ -25,3 +25,13 @@
 main {
   min-height: 100vh;
 }
+
+main .pane-heading {
+  min-height: 4.5em;
+}
+
+main .pane-heading h4 {
+  margin-left: 0.75rem;
+  padding-top: 0.75rem;
+  font-size: 1em;
+}
