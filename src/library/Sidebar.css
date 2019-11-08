@@ -59,11 +59,15 @@
 }
 
 .Sidebar ul li a {
-    padding: 10px;
-    font-size: 1.0em;
-    display: block;
-    text-decoration: none;
-    color: gray;
+  line-height: 3em;
+  padding-left: 2em;
+  font-size: 1.0em;
+  display: block;
+  text-decoration: none;
+  color: gray;
+  margin-right: 1em;
+  border-top-right-radius: 1.5em;
+  border-bottom-right-radius: 1.5em;
 }
 
 .Sidebar ul .active {
@@ -90,7 +94,6 @@
 
 .Sidebar li {
   min-width: 12em;
-  padding-left: 2em;
 }
 
 .Sidebar li a[href="/"] {
