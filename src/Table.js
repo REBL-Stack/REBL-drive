@@ -36,7 +36,7 @@ function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
     <tr className={["DirRow", selected && "active"].join(" ")} onClick={onClick}>
        <td className="text-left">
          <span className="item-icon"><FontAwesomeIcon icon={faFolder}/></span>
-         <a href="#" onClick={() => onOpen({item: item})}>{name}</a>
+         <a href="#" onClick={onOpen && (() => onOpen({item: item}))}>{name}</a>
        </td>
        <td>{modified}</td>
        <td>{size}</td>

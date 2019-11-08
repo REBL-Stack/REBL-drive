@@ -41,3 +41,8 @@ main .FavoriteMarker {
   color: var(--success);
   margin-left: 0.5em;
 }
+
+main .FileRow td {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
