@@ -32,7 +32,7 @@ export default function App (props) {
       <Router>
         <Row className="no-gutters">
           <ColAuto>
-            <Sidebar className="border-right"> 
+            <Sidebar className="border-right">
               <div className="w-100 mt-4 mb-5 text-center">
                 <Action className="btn-primary mx-auto rounded"
                         createFolder={createFolder}
@@ -59,7 +59,7 @@ export default function App (props) {
             </Sidebar>
           </ColAuto>
           <Col>
-            <Navbar className="navbar-dark bg-light">
+            <Navbar className="navbar-light bg-light">
               <form className="form-inline my-2 my-lg-0">
                 { false &&
                   <>
