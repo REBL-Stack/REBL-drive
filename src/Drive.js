@@ -13,14 +13,15 @@ const toggler = (selection, getter, setter) =>
      () => {
       const item = selection[0]
       const change = !getter(item)
+      console.log("TOGGLE:", item, change)
       selection.forEach((item) => {
         setter(item, change)
       })
     }
 
 export function ToggleTrash (props) {
-  const {drive} = props
-  const [selection, select, isSelected] = useSelection(drive, "trash")
+  const {drive, pane} = props
+  const [selection, select, isSelected] = useSelection(drive, pane)
   const [trashed, setTrashed, isTrashed] = useTrash(drive)
   const toggleTrashed = toggler(selection, isTrashed, setTrashed)
   return (
@@ -32,8 +33,7 @@ export function ToggleTrash (props) {
 }
 
 export function ToggleFavorite (props) {
-  const {drive} = props
-  const pane = "favorite"
+  const {drive, pane} = props
   const [selection, select, isSelected] = useSelection(drive, pane)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const toggleFavorite = toggler(selection, isFavorite, setFavorite)
@@ -54,9 +54,11 @@ export function ActionBar (props) {
     </div>
   )
 }
+
 export function Favorites ({drive}) {
   const [favorites, setFavorite, getFavorite] = useFavorites(drive)
   const items = useDriveItems(drive, favorites)
+  console.log("Favorities:", favorites, items)
   return (
     <>
       <div className="pane-heading">
@@ -94,6 +96,7 @@ export default function Drive ({drive, navigate}) {
   const items = useDriveBranch(drive)
   const [current, setCurrent] = useCurrent(drive)
   const [trashed, setTrashed, isTrashed] = useTrash(drive)
+  const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const activeItems = items.filter((item) => !isTrashed(item.pathname))
   const title = drive.title || "Drive"
   return(
@@ -105,6 +108,6 @@ export default function Drive ({drive, navigate}) {
          <ToggleFavorite drive={drive}/>
        </ActionBar>
      </div>
-     <FilesTable drive={drive} items={activeItems} navigate={navigate}/>
+     <FilesTable drive={drive} items={activeItems} navigate={navigate} isFavorite={isFavorite}/>
     </>)
 }

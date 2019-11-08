@@ -179,26 +179,28 @@ function useCollectionAtom (drive, label) {
   return [collection, setCollection]
 }
 
-function useCollection (drive, label) {
+function useCollection (drive, label, removeFalsy) {
   // returns an array of keys in the collection, followed by a getter and setter
   const [collection, setCollection] = useCollectionAtom(drive, label)
   const setter = useCallback((id, value) => {
-    setCollection( collection => ({...collection, [id]: value}))
+    setCollection( collection => (removeFalsy && !value)
+                                 ? _.omitBy(collection, id)
+                                 : ({...collection, [id]: value}))
   }, [collection])
   const getter = useCallback((id) => get(collection, id), [collection])
   return ([Array.from(Object.keys(collection)), setter, getter])
 }
 
 export function useFavorites (drive) {
-  return useCollection(drive, "favorites")
+  return useCollection(drive, "favorites", true)
 }
 
 export function useShared (drive) {
-  return useCollection(drive, "shared")
+  return useCollection(drive, "shared", true)
 }
 
 export function useTrash (drive) {
-  return useCollection(drive, "trash")
+  return useCollection(drive, "trash", true)
 }
 
 export function useSelection (drive, pane) {
@@ -212,7 +214,7 @@ export function useSelection (drive, pane) {
         }
       })
     }
-    setSelected(item.pathname, !isSelected(item.pathname))
+    setSelected(item.pathname, !isSelected(item.pathname) || undefined)
   }
   return [selection, toggle, item => isSelected(item.pathname) ]
 }

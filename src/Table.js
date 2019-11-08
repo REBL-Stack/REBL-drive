@@ -44,9 +44,8 @@ function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
   )
 }
 
-function ItemRow ({item, navigate, selected, onClick}) {
+function ItemRow ({item, navigate, selected, favorite, onClick}) {
   const {path, name, isDirectory, pathname} = useDriveItem(item)
-  const [favorite] = useFavorite(item)
   return (
     isDirectory ?
     <DirRow key={name} item={item} name={name} favorite={favorite} selected={selected} onClick={onClick} onOpen={navigate}/> :
@@ -54,9 +53,8 @@ function ItemRow ({item, navigate, selected, onClick}) {
   )
 }
 
-export default function FilesTable ({drive, items, navigate, pane}) {
+export default function FilesTable ({drive, items, navigate, pane, isFavorite}) {
   // Show a table of drive items, subset of those in the drive
-  const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const [selection, select, isSelected] = useSelection(drive, pane)
   return (
       <table className="table table-hover">
@@ -70,7 +68,8 @@ export default function FilesTable ({drive, items, navigate, pane}) {
        <tbody>
         {items && items.map((item) => {
           const selected = isSelected(item)
-          const favorite = isFavorite(item)
+          const favorite = isFavorite && isFavorite(item.pathname)
+          console.log("FAVORITE:", isFavorite, favorite)
           return (<ItemRow key={item.name} selected={selected} favorite={favorite} onClick={()=>select(item)} item={item} navigate={navigate}/>
           )})}
        </tbody>
