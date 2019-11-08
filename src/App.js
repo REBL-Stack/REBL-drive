@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
 import { useBlockstack, useFile} from 'react-blockstack'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHdd, faStar, faShare, faTrash, faPlus, faHeart, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
+import { faHdd, faStar, faShare, faTrash, faPlus, faHeart, faCloud, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
 import { useDrive } from './library/drive'
 import Landing from './Landing'
-import Drive, {Favorites, Shared, Trash} from './Drive'
+import Drive, {Favorites, Shared} from './Drive'
+import Trash from './Trash'
 import Auth from './Auth'
 import Action from './Action'
-import { config } from './config'
+import ErrorBoundary from './ErrorBoundary'
+import configuration from './config' // FIX: Conflicting naming with user config
 
 function Footer (props) {
   return (
@@ -26,31 +28,33 @@ function Footer (props) {
 export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
   const [drive, dispatch] = useDrive()
-  const { dir } = Object.assign({dir: ["img"]}, drive)
-  const navigate = (payload) => dispatch({...payload, action: "navigate"})
+  const { dir } = drive /// FIX???
+  const history = useHistory()
+  const navigate = (payload) => {
+    dispatch({...payload, action: "navigate"})
+    history && history.push("/drive")
+  }
   const upload = (files) => dispatch({action: "upload", files: files})
   const createFolder = (name) => dispatch({action: "createFolder", name: name})
-  const [history, setHistory] = useFile("config")
+  const [config, setConfig] = useFile("config")
   useEffect( () => {
     var d = new Date()
-    if (userData && setHistory) {
-      setHistory("" + d.toString())
+    if (userData && setConfig) {
+      setConfig("" + d.toString())
     }
-  },[!!userData, !!setHistory])
+  },[!!userData, !!setConfig])
   return (
    <div className="App">
-    <div>
       {!signIn && !signOut && <div>...</div>}
       {signIn && <Landing />}
       {signOut &&
-      <Router>
         <Row className="no-gutters">
-          {config.sidebar &&
+          {configuration.sidebar &&
           <ColAuto>
-            <Sidebar className="border-right bg-light">
-              <div className="w-100 mt-4 mb-5 text-center">
-                <Action className="btn-primary mx-auto rounded"
-                        createFolder={createFolder}
+            <Sidebar className="border-right">
+              <div className="w-100 mt-4 mb-5 ml-5 text-left">
+                <Action className="btn-outline-primary btn-lg mx-auto rounded-button-circle"
+                        createFolder={false && createFolder}
                         uploadFiles={upload}>
                   <FontAwesomeIcon icon={faPlus}/>
                   <span className="ml-3 mr-2">New</span>
@@ -75,7 +79,7 @@ export default function App (props) {
           </ColAuto>}
           <Col>
             <Navbar className="navbar-dark bg-dark">
-              {!config.sidebar &&
+              {!configuration.sidebar &&
                  <a className="navbar-brand" href="/#">
                    <span className="text-primary mr-2">
                      <FontAwesomeIcon icon={faDharmachakra}/>
@@ -89,7 +93,7 @@ export default function App (props) {
                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                   </> }
               </form>
-              {!config.sidebar &&
+              {!configuration.sidebar &&
               <Action className="btn-primary mx-auto rounded"
                       createFolder={createFolder}
                       uploadFiles={upload}>
@@ -99,19 +103,21 @@ export default function App (props) {
               <Auth/>
             </Navbar>
             <main className="bg-light">
-              <Switch>
-                <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
-                <Route path="/favorites" render={(props) => <Favorites drive={drive}/>}/>
-                <Route path="/shared" render={(props) => <Shared drive={drive}/>}/>
-                <Route path="/trash" render={(props) => <Trash drive={drive}/>}/>
-                <Redirect exact from="/" to="/drive" />
-              </Switch>
+              <ErrorBoundary>
+                <Switch>
+                  <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
+                  <Route path="/favorites" render={(props) => <Favorites drive={drive} navigate={navigate}/>}/>
+                  <Route path="/shared" render={(props) => <Shared drive={drive} navigate={navigate}/>}/>
+                  <Route path="/trash" render={(props) => <Trash drive={drive} navigate={navigate}/>}/>
+                  <Redirect exact from="/" to="/drive" />
+                </Switch>
+              </ErrorBoundary>
             </main>
           </Col>
-        </Row>
-      </Router>}
-      </div>
-      <Footer/>
+        </Row>}
+      <footer>
+
+      </footer>
   </div>
   )
 }

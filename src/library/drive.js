@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, map, filter } from 'lodash'
+import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, isEqual, map, filter } from 'lodash'
 import { Atom, swap, useAtom, deref} from "@dbeining/react-atom"
 
 class DriveItem {
   // Represents a file or directory in a Drive
   // root: [] // only relevant when using filesystem, better if filepath
   pathname /// name in gaia, required for files, used as id for now
-  dir: [] // path in virtual drive hierarchy, parent, excluding name
+  path: [] // path in virtual drive hierarchy, parent, excluding name
   name: "untitled"
   isDirectory: false
   constructor(obj) {
@@ -16,10 +16,11 @@ class DriveItem {
   }
 }
 
-const dirpathDefault = ["img"]
+const rootDefault = ["drive"] // prefix under which files are kept
+const dirpathDefault = []
 
 class Drive {
-  root = [] // only relevant when using filesystem
+  root = rootDefault // only relevant when using filesystem
   current // current directory shown
   collections: {}
   itemsAtom // atom with id -> DriveItem
@@ -36,7 +37,7 @@ function insertDriveItems(drive, ...items) {
 }
 
 /* ================================================= */
-
+// File System Access
 
 function matchingFiles (userSession, match) {
   // promise with list of files starting with the path
@@ -53,6 +54,8 @@ function matchingFiles (userSession, match) {
   return (new Promise(resolveFiles))
 }
 
+/* ================================================= */
+
 function asDriveItem (root, path) {
   // path is a list of steps with the name being last
   const name = path[path.length - 1]
@@ -66,7 +69,7 @@ function newFolder (drive, name) {
   const {root, current} = drive
   const dir = deref(current)
   const pathname = concat(root, dir, [name]).join("/")
-  const item = new DriveItem({pathname, path: concat(root, dir), name, isDirectory: true})
+  const item = new DriveItem({pathname, path: dir, name, isDirectory: true})
   insertDriveItems(drive, item)
 }
 
@@ -88,18 +91,18 @@ function useStateAtom(atom) {
 
 function useFiles (dir) {
   // Files in a specific subpath
-  const {userSession} = useBlockstack()
+  const {userSession, userData} = useBlockstack()
   const [files, setFiles] = useState()
   const dirpath = dir && dir.join("/") + "/"
   console.log("USE FILES:", dirpath)
   useEffect( () => {
-    if (dirpath) {
+    if (dirpath && userData) {
       matchingFiles(userSession, dirpath).then(setFiles)
       // Fix: need to be able to cancel
     } else {
       setFiles(null)
     }
-  },[userSession, dirpath])
+  },[userSession, userData, dirpath])
   return(files || [])
 }
 
@@ -142,7 +145,7 @@ export function useFileMeta (driveItem) {
   return({fileUrl: url, modified, size, deleteFile})
 }
 
-export function useDirectoryMeta (path) {
+export function useDirectoryMeta (driveItem) {
   const modified = ""
   const size = ""
   return ({modified, size})
@@ -176,11 +179,13 @@ function useCollectionAtom (drive, label) {
   return [collection, setCollection]
 }
 
-function useCollection (drive, label) {
+function useCollection (drive, label, keep) {
   // returns an array of keys in the collection, followed by a getter and setter
   const [collection, setCollection] = useCollectionAtom(drive, label)
   const setter = useCallback((id, value) => {
-    setCollection( collection => ({...collection, [id]: value}))
+    setCollection( collection => (!keep && !value)
+                                 ? _.omit(collection, id)
+                                 : ({...collection, [id]: value}))
   }, [collection])
   const getter = useCallback((id) => get(collection, id), [collection])
   return ([Array.from(Object.keys(collection)), setter, getter])
@@ -200,9 +205,16 @@ export function useTrash (drive) {
 
 export function useSelection (drive, pane) {
   // pane is string
-  const [selection, select, isSelected] = useCollection(drive, "selection" + (pane || ""))
-  const toggle = (item) => {
-    select(item.pathname, !isSelected(item.pathname))
+  const [selection, setSelected, isSelected] = useCollection(drive, "selection" + (pane || ""))
+  const toggle = (item, allowMultiple) => {
+    if (!allowMultiple) {
+      selection.forEach((pathname) => {
+        if (item.pathname != pathname) {
+          setSelected(pathname, false)
+        }
+      })
+    }
+    setSelected(item.pathname, !isSelected(item.pathname) || undefined)
   }
   return [selection, toggle, item => isSelected(item.pathname) ]
 }
@@ -219,63 +231,75 @@ export function useFavorite(driveItem) {
 /* ============================================================== */
 
 function asDriveItemsList (drive, tree) {
-  // tree is a map from names to subitems (if directory) or null if file
+  // tree is a map from names to: subitems (if directory), or null if file
   const {root, current, itemsAtom} = drive
   const dir = deref(current)
   const convert = ([name, content]) => {
     const pathname = concat(root, dir).join("/") + "/" + name // + (content ? "/" : "")
-    return (new DriveItem({pathname, root, dir: dir, name, isDirectory: content}))
+    return (new DriveItem({pathname, root, path: dir, name, isDirectory: content}))
   }
   const entriesArray = Array.from(tree.entries())
   const out = entriesArray.map(convert)
   return out
 }
 
+export function useLoadDriveItems(drive) {
+  // Initialize all drive items from the files in the root
+  // Should ultimately be eliminated or just provide backup on failure
+  const {root, itemsAtom} = drive
+  const files = useFiles(root)
+  const [items, setItems] = useStateAtom(itemsAtom)
+  console.log("Load Drive Items:", root, itemsAtom, items)
+  useEffect( () => {
+    if (files) {
+      const tree = files && groupFiles(files)
+      setItems(tree && asDriveItemsList(drive, tree))
+    }
+  },[files])
+  return (items)
+}
+
 export function useDriveBranch(drive) {
   // OUT: Array with top level drive items for the current branch (specified by dir)
-  const {root, current, itemsAtom} = drive
-  const dir = deref(current)
-  const files = useFiles(dir)
-  const [state, setState] = useStateAtom(itemsAtom)
-  console.log("ItemsAtom:", dir, itemsAtom, state)
-  useEffect( () => {
-    if (files && isEmpty(state)) { // FIX: useFiles returns [] initially but shouldn't
-      const tree = files && groupFiles(files)
-      setState(tree && asDriveItemsList(drive, tree))
-    }
-  },[files, state])
-  return (state)
+  const {current, itemsAtom} = drive
+  const [dir, setDir] = useCurrent(drive) // deref(current) // useCurrent instead?
+  const [items, setItems] = useStateAtom(itemsAtom)
+  // careful with equality, array may be equal even with different order in lodash....
+  const branchItems = items && filter(items, (item) => (isEqual(item.path, dir) || item.path == dir))
+  console.log("Branch Items:", branchItems, dir, items)
+  return (branchItems)
 }
 
 export function useDriveItems (drive, ids) {
   // IN: List of ids for drive items to return, or nil for all
   // OUT: Array of matching drive items, in same order
   const {itemsAtom} = drive
-  const [state, setState] = useStateAtom(itemsAtom)
-  return (isNil(ids) ? state : map(ids, (id) => _.find(state, (item) => (item.pathname == id))))
+  const [items, setItems] = useStateAtom(itemsAtom)
+  return (isNil(ids) ? items : map(ids, (id) => _.find(items, (item) => (item.pathname == id))))
 }
 
 export function useUpload (drive) {
+  // function to handle upload of files and folders into current directory
   const {root, current, itemsAtom } = drive || {}
-  const dir = deref(current)
-  const dirpath = dir && (dir.join("/") + "/")
+  const [dir, setDir] = useCurrent(drive)
+  const dirpath = dir && (concat(root, dir).join("/") + "/")
   const { userSession } = useBlockstack()
   const [files, setFiles] = useState()
-  const [state, setState] = useStateAtom(itemsAtom)
+  const [state, setItems] = useStateAtom(itemsAtom)
   const putFile = userSession.putFile
+  console.log("DIRPATH:", dirpath, root, dir)
   useEffect( () => {
     if (files) {
       console.log("FILES:", files)
       files.forEach( (file) => {
-        const name = dirpath + file.name
+        const name = file.name
+        const pathname = dirpath + name
         const reader = new FileReader()
         reader.onload = () => {
           const content = reader.result
-          putFile(name, content)
-          const tree = new Map([])
-          tree.set(name, null)
-          const extra = asDriveItemsList(drive, tree)
-          setState((items) => [...items, ...extra])
+          putFile(pathname, content)
+          const item = new DriveItem({pathname, root, path: dir, name, isDirectory: false})
+          setItems((items) => [...items, item])
         }
       reader.readAsArrayBuffer(file)
       })
@@ -288,6 +312,7 @@ export function useUpload (drive) {
 }
 
 export function useCurrent (drive) {
+    // Subpath currently in view (excluding root prefix)
     return useStateAtom(drive.current)
 }
 
@@ -299,6 +324,8 @@ export function useDrive () {
   const [dir, setDir] = useCurrent(drive)
   // const setDir = (dir) => swap(driveAtom, (drive => new Drive(merge({}, drive, {dir: dir}))))
   const [upload, uploadStatus] = useUpload(drive)
+  const items = useLoadDriveItems(drive)
+  console.log("Loaded drive items:", items)
   const dispatch = (event) => {
     console.log("Dispatch:", event)
     switch (event.action) {
@@ -307,14 +334,14 @@ export function useDrive () {
         return null
       case "navigate":
         if (event.item) {
-          const {root, dir, name} = event.item
-          const destination = concat(dir, [name])
+          const {root, path, name} = event.item
+          const destination = concat(path, [name])
           console.info("Navigate:", destination )
           setDir(destination )
         } else {
-          const destination = event.dir
+          const destination = event.path
           console.info("Navigate:", destination )
-          setDir(event.dir)
+          setDir(destination)
         }
         return (null)
       case "createFolder":

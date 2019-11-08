@@ -1,6 +1,6 @@
+const config = ({
+  app: process.env.REACT_APP,
+  title: process.env.REACT_APP_TITLE
+})
 
-
-export const config = {
-  app: "dcrypt-vault",
-  sidebar: null
-}
+export default config

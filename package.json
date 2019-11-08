@@ -20,8 +20,8 @@
     "react": "^16.9.0",
     "react-blockstack": "^0.6.3",
     "react-dom": "^16.9.0",
-    "react-router": "^5.0.0",
-    "react-router-dom": "^5.0.1"
+    "react-router": "^5.1.0",
+    "react-router-dom": "^5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
