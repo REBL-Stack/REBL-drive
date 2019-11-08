@@ -56,7 +56,7 @@ export function ActionBar (props) {
   )
 }
 
-export function Favorites ({drive}) {
+export function Favorites ({drive, navigate}) {
   const [favorites, setFavorite, getFavorite] = useFavorites(drive)
   const items = useDriveItems(drive, favorites)
   console.log("Favorities:", favorites, items)
@@ -65,22 +65,22 @@ export function Favorites ({drive}) {
       <div className="pane-heading">
         <h4>Favorites</h4>
       </div>
-      <FilesTable drive={drive} items={items} pane="favorites"/>
+      <FilesTable drive={drive} items={items} pane="favorites" navigate={navigate}/>
     </>)
 }
 
-export function Shared ({drive}) {
+export function Shared ({drive, navigate}) {
   const [items] = useShared(drive)
   return (
     <>
       <div className="pane-heading">
         <h4>Shared</h4>
       </div>
-      <FilesTable drive={drive} items={items} pane="shared"/>
+      <FilesTable drive={drive} items={items} pane="shared"  navigate={navigate}/>
     </>)
 }
 
-export function Trash ({drive}) {
+export function Trash ({drive, navigate}) {
   const [trashed] = useTrash(drive)
   const items = useDriveItems(drive, trashed)
   return (
@@ -88,7 +88,7 @@ export function Trash ({drive}) {
       <div className="pane-heading">
         <h4>Trash</h4>
       </div>
-      <FilesTable drive={drive} items={items} pane="trash"/>
+      <FilesTable drive={drive} items={items} pane="trash" navigate={navigate}/>
     </>)
 }
 

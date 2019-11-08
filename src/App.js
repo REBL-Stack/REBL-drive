@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useBlockstack, useFile} from 'react-blockstack'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Redirect, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHdd, faStar, faShare, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
@@ -14,17 +14,21 @@ import ErrorBoundary from './ErrorBoundary'
 export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
   const [drive, dispatch] = useDrive()
-  const { dir } = drive
-  const navigate = (payload) => dispatch({...payload, action: "navigate"})
+  const { dir } = drive /// FIX???
+  const history = useHistory()
+  const navigate = (payload) => {
+    dispatch({...payload, action: "navigate"})
+    history && history.push("/drive")
+  }
   const upload = (files) => dispatch({action: "upload", files: files})
   const createFolder = (name) => dispatch({action: "createFolder", name: name})
-  const [history, setHistory] = useFile("config")
+  const [config, setConfig] = useFile("config")
   useEffect( () => {
     var d = new Date()
-    if (userData && setHistory) {
-      setHistory("" + d.toString())
+    if (userData && setConfig) {
+      setConfig("" + d.toString())
     }
-  },[!!userData, !!setHistory])
+  },[!!userData, !!setConfig])
   return (
    <div className="App">
       {!signIn && !signOut && <div>...</div>}
@@ -74,9 +78,9 @@ export default function App (props) {
               <ErrorBoundary>
                 <Switch>
                   <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
-                  <Route path="/favorites" render={(props) => <Favorites drive={drive}/>}/>
-                  <Route path="/shared" render={(props) => <Shared drive={drive}/>}/>
-                  <Route path="/trash" render={(props) => <Trash drive={drive}/>}/>
+                  <Route path="/favorites" render={(props) => <Favorites drive={drive} navigate={navigate}/>}/>
+                  <Route path="/shared" render={(props) => <Shared drive={drive} navigate={navigate}/>}/>
+                  <Route path="/trash" render={(props) => <Trash drive={drive} navigate={navigate}/>}/>
                   <Redirect exact from="/" to="/drive" />
                 </Switch>
               </ErrorBoundary>
