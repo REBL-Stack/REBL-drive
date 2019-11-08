@@ -91,18 +91,18 @@ function useStateAtom(atom) {
 
 function useFiles (dir) {
   // Files in a specific subpath
-  const {userSession} = useBlockstack()
+  const {userSession, userData} = useBlockstack()
   const [files, setFiles] = useState()
   const dirpath = dir && dir.join("/") + "/"
   console.log("USE FILES:", dirpath)
   useEffect( () => {
-    if (dirpath) {
+    if (dirpath && userData) {
       matchingFiles(userSession, dirpath).then(setFiles)
       // Fix: need to be able to cancel
     } else {
       setFiles(null)
     }
-  },[userSession, dirpath])
+  },[userSession, userData, dirpath])
   return(files || [])
 }
 

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useBlockstack, useFile} from 'react-blockstack'
 import { BrowserRouter as Router, Switch, Route, Redirect, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHdd, faStar, faShare, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faHdd, faStar, faShare, faTrash, faPlus, faCloud } from '@fortawesome/free-solid-svg-icons'
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
 import { useDrive } from './library/drive'
 import Landing from './Landing'
@@ -39,7 +39,7 @@ export default function App (props) {
           <ColAuto>
             <Sidebar className="border-right">
               <div className="w-100 mt-4 mb-5 ml-5 text-left">
-                <Action className="btn-outline-primary mx-auto rounded-button-circle"
+                <Action className="btn-outline-primary btn-lg mx-auto rounded-button-circle"
                         createFolder={false && createFolder}
                         uploadFiles={upload}>
                   <FontAwesomeIcon icon={faPlus}/>

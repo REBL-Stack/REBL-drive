@@ -9,7 +9,13 @@ import { AppConfig } from 'blockstack'
 
 // Require Sass file so webpack can build it
 // import 'bootstrap/dist/css/bootstrap.css'
-import 'bootswatch/dist/flatly/bootstrap.css'
+
+// Drive:
+// import 'bootswatch/dist/flatly/bootstrap.css'
+
+// Cloud:
+import 'bootswatch/dist/simplex/bootstrap.css'
+
 import'./styles/style.css'
 
 // Activate bootstrap actions

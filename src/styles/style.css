@@ -12,7 +12,7 @@ body {
 }
 
 .Sidebar {
-  min-width: 20em;
+  min-width: 15em;
 }
 
 .Landing {
@@ -24,6 +24,19 @@ body {
 .Sidebar ul li {
   border-radius: 10px;
 }
+
+/* Navbar */
+
+ul.breadcrumb {
+    border: none;
+}
+
+.ActionBar button {
+  margin-left: 1em;
+  margin-top: 0.5rem;
+}
+
+/* main area */
 
 main {
   min-height: 100vh;
