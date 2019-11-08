@@ -32,7 +32,7 @@ export default function App (props) {
       <Router>
         <Row className="no-gutters">
           <ColAuto>
-            <Sidebar className="border-right bg-primary text-white">
+            <Sidebar className="border-right"> 
               <div className="w-100 mt-4 mb-5 text-center">
                 <Action className="btn-primary mx-auto rounded"
                         createFolder={createFolder}
