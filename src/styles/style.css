@@ -36,3 +36,8 @@ main .pane-heading h4 {
   padding-top: 0.75rem;
   font-size: 1.5em;
 }
+
+main .FavoriteMarker {
+  color: var(--success);
+  margin-left: 0.5em;
+}

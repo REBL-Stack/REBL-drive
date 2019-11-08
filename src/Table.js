@@ -8,6 +8,10 @@ import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash,
 import Breadcrumb from "./library/Breadcrumb"
 import config from "./config"
 
+function FavoriteMarker ({hidden}) {
+  return <FontAwesomeIcon className="FavoriteMarker" hidden={hidden} icon={faStar}/>
+}
+
 function FileRow ({dir, name, item, favorite, selected, onClick}) {
   const meta = useFileMeta(item)
   const {url, modified, size, deleteFile} = meta
@@ -19,7 +23,7 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
       <td>
         <span className="item-icon"><FontAwesomeIcon icon={faFile}/></span>
         <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
-        {favorite && <FontAwesomeIcon icon={faStar}/>}
+        <FavoriteMarker hidden={!favorite}/>
       </td>
       <td>{date && date.toLocaleDateString(undefined, dateOptions)}</td>
       <td>{size && filesize(size, {round: 1})}</td>
