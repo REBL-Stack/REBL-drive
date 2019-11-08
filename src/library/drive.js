@@ -179,11 +179,11 @@ function useCollectionAtom (drive, label) {
   return [collection, setCollection]
 }
 
-function useCollection (drive, label, removeFalsy) {
+function useCollection (drive, label, keep) {
   // returns an array of keys in the collection, followed by a getter and setter
   const [collection, setCollection] = useCollectionAtom(drive, label)
   const setter = useCallback((id, value) => {
-    setCollection( collection => (removeFalsy && !value)
+    setCollection( collection => (!keep && !value)
                                  ? _.omit(collection, id)
                                  : ({...collection, [id]: value}))
   }, [collection])
@@ -192,15 +192,15 @@ function useCollection (drive, label, removeFalsy) {
 }
 
 export function useFavorites (drive) {
-  return useCollection(drive, "favorites", true)
+  return useCollection(drive, "favorites")
 }
 
 export function useShared (drive) {
-  return useCollection(drive, "shared", true)
+  return useCollection(drive, "shared")
 }
 
 export function useTrash (drive) {
-  return useCollection(drive, "trash", true)
+  return useCollection(drive, "trash")
 }
 
 export function useSelection (drive, pane) {

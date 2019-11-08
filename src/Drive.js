@@ -48,6 +48,7 @@ export function ToggleFavorite (props) {
 export function ActionBar (props) {
   const {drive, pane, children} = props
   const [selection, select, isSelected] = useSelection(drive, pane)
+  console.log("SELECTION:", selection, !isEmpty(selection))
   return (
     <div className="ActionBar">
       {!isEmpty(selection) && children}
