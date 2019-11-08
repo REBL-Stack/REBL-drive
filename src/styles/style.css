@@ -32,6 +32,7 @@ main {
 main .pane-heading {
   min-height: 4.5em;
   font-weight: bold;
+  border-bottom: thin solid var(--light);
 }
 
 main .pane-heading h4 {

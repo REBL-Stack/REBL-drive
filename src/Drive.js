@@ -8,7 +8,7 @@ import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash,
 import Breadcrumb from "./library/Breadcrumb"
 import config from "./config"
 import FilesTable from './Table'
-import ActionBar, {ToggleTrash, ToggleFavorite} from './ActionBar'
+import ActionBar, {ToggleTrash, ToggleFavorite, DownloadAction} from './ActionBar'
 
 
 export function Favorites ({drive, navigate}) {
@@ -53,6 +53,7 @@ export default function Drive ({drive, navigate}) {
      <div className="pane-heading d-flex justify-content-between">
        <Breadcrumb title={title} trail={current} onClick={navigate}/>
        <ActionBar className="mr-4" drive={drive} pane={null}>
+          {false && <DownloadAction drive={drive}/>}
          <ToggleTrash drive={drive}/>
          <ToggleFavorite drive={drive}/>
        </ActionBar>
