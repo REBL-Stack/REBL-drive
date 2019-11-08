@@ -20,7 +20,7 @@ const toggler = (selection, getter, setter) =>
 
 export function ToggleTrash (props) {
   const {drive} = props
-  const [selection, select, isSelected] = useSelection(drive)
+  const [selection, select, isSelected] = useSelection(drive, "trash")
   const [trashed, setTrashed, isTrashed] = useTrash(drive)
   const toggleTrashed = toggler(selection, isTrashed, setTrashed)
   return (
@@ -33,7 +33,8 @@ export function ToggleTrash (props) {
 
 export function ToggleFavorite (props) {
   const {drive} = props
-  const [selection, select, isSelected] = useSelection(drive)
+  const pane = "favorite"
+  const [selection, select, isSelected] = useSelection(drive, pane)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const toggleFavorite = toggler(selection, isFavorite, setFavorite)
   return (

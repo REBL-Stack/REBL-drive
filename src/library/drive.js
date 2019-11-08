@@ -203,9 +203,16 @@ export function useTrash (drive) {
 
 export function useSelection (drive, pane) {
   // pane is string
-  const [selection, select, isSelected] = useCollection(drive, "selection" + (pane || ""))
-  const toggle = (item) => {
-    select(item.pathname, !isSelected(item.pathname))
+  const [selection, setSelected, isSelected] = useCollection(drive, "selection" + (pane || ""))
+  const toggle = (item, allowMultiple) => {
+    if (!allowMultiple) {
+      selection.forEach((pathname) => {
+        if (item.pathname != pathname) {
+          setSelected(pathname, false)
+        }
+      })
+    }
+    setSelected(item.pathname, !isSelected(item.pathname))
   }
   return [selection, toggle, item => isSelected(item.pathname) ]
 }
