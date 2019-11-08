@@ -33,7 +33,7 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
 function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
   const {modified, size} = useDirectoryMeta(item.pathname)
   return (
-    <tr className={["DirRow", selected && "active"].join(" ")} onClick={onClick}>
+    <tr className={["DirRow", selected && "table-active"].join(" ")} onClick={onClick}>
        <td className="text-left">
          <span className="item-icon"><FontAwesomeIcon icon={faFolder}/></span>
          <a href="#" onClick={onOpen && (() => onOpen({item: item}))}>{name}</a>
