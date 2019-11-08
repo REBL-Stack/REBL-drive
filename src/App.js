@@ -9,6 +9,7 @@ import Landing from './Landing'
 import Drive, {Favorites, Shared, Trash} from './Drive'
 import Auth from './Auth'
 import Action from './Action'
+import ErrorBoundary from './ErrorBoundary'
 
 export default function App (props) {
   const { userData, person, signIn, signOut } = useBlockstack()
@@ -70,13 +71,15 @@ export default function App (props) {
               <Auth/>
             </Navbar>
             <main className="bg-light">
-              <Switch>
-                <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
-                <Route path="/favorites" render={(props) => <Favorites drive={drive}/>}/>
-                <Route path="/shared" render={(props) => <Shared drive={drive}/>}/>
-                <Route path="/trash" render={(props) => <Trash drive={drive}/>}/>
-                <Redirect exact from="/" to="/drive" />
-              </Switch>
+              <ErrorBoundary>
+                <Switch>
+                  <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
+                  <Route path="/favorites" render={(props) => <Favorites drive={drive}/>}/>
+                  <Route path="/shared" render={(props) => <Shared drive={drive}/>}/>
+                  <Route path="/trash" render={(props) => <Trash drive={drive}/>}/>
+                  <Redirect exact from="/" to="/drive" />
+                </Switch>
+              </ErrorBoundary>
             </main>
           </Col>
         </Row>

@@ -42,7 +42,12 @@ main .FavoriteMarker {
   margin-left: 0.5em;
 }
 
-main .FileRow td {
-  text-overflow: ellipsis;
+main table {
+  table-layout: fixed
+}
+
+main table td {
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
