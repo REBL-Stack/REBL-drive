@@ -24,7 +24,7 @@ export default function ActionButton (props) {
     // not working: dropdownToggleRef.current.dropdown()
   }
   return (
-      <>
+      <div className="ActionSelector">
         <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
         <button ref={dropdownToggleRef}
                 className={["btn dropdown-toggle", className].join(" ")}
@@ -32,7 +32,7 @@ export default function ActionButton (props) {
             { props.children }
         </button>
         <div className="dropdown-menu">
-          <a className="dropdown-item" href="#">
+          <a hidden={true} className="dropdown-item" href="#">
             <div>
               <FontAwesomeIcon icon={faFolderPlus}/>
               <span className="ml-2">Create Folder</span>
@@ -51,6 +51,6 @@ export default function ActionButton (props) {
             <span className="ml-2">Upload File</span>
           </a>
         </div>
-      </>
+      </div>
     )
 }
