@@ -270,6 +270,7 @@ export function useDriveItems (drive, ids) {
 }
 
 export function useUpload (drive) {
+  // function to handle upload of files and folders into current directory
   const {root, current, itemsAtom } = drive || {}
   const [dir, setDir] = useCurrent(drive)
   const dirpath = dir && (concat(root, dir).join("/") + "/")
@@ -282,15 +283,14 @@ export function useUpload (drive) {
     if (files) {
       console.log("FILES:", files)
       files.forEach( (file) => {
-        const pathname = dirpath + file.name
+        const name = file.name
+        const pathname = dirpath + name
         const reader = new FileReader()
         reader.onload = () => {
           const content = reader.result
           putFile(pathname, content)
-          const tree = new Map([])
-          tree.set(pathname, null)
-          const extra = asDriveItemsList(drive, tree)
-          setItems((items) => [...items, ...extra])
+          const item = new DriveItem({pathname, root, path: dir, name, isDirectory: false})
+          setItems((items) => [...items, item])
         }
       reader.readAsArrayBuffer(file)
       })
