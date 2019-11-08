@@ -145,7 +145,7 @@ export function useFileMeta (driveItem) {
   return({fileUrl: url, modified, size, deleteFile})
 }
 
-export function useDirectoryMeta (path) {
+export function useDirectoryMeta (driveItem) {
   const modified = ""
   const size = ""
   return ({modified, size})

@@ -31,7 +31,7 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
 }
 
 function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
-  const {modified, size} = useDirectoryMeta(item.pathname)
+  const {modified, size} = useDirectoryMeta(item)
   console.log("SELDIR:", name, selected, favorite)
   return (
     <tr className={["DirRow", selected && "table-active"].join(" ")} onClick={onClick}>
