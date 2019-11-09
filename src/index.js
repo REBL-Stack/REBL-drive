@@ -19,8 +19,17 @@ switch(config.kind) {
     break
 
   case 'cloud':
-    import('bootswatch/dist/simplex/bootstrap.css')
+    // materia, pulse, spacelab, superhero, united
+    import('bootswatch/dist/spacelab/bootstrap.css')
     import('./styles/style.css')
+    break
+
+  case 'cloud2': // https://fezvrasta.github.io/bootstrap-material-design
+    import('bootstrap-material-design/dist/css/bootstrap-material-design.css')
+    /*import('jquery').then((JQuery) => {
+      import('bootstrap-material-design/dist/js/bootstrap-material-design.js')
+      import('./styles/style.css')
+    })*/
     break
 
   case 'vault':
