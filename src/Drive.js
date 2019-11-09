@@ -67,13 +67,13 @@ export default function Drive ({drive, navigate}) {
   const [selection, select, isSelected] = useSelection(drive, pane)
   const selectedItems = useDriveItems(drive, selection)
   const {userSession} = useBlockstack()
-  const exportAction = useCallback(() => {
+  const exportAction = useCallback(selectedItems.length > 0 && (() => {
     const item = selectedItems[0]  // FIX: export multiple!
     console.log("ITEM:", item)
     if (item) {
       exportItem(userSession, item)
     }
-  }, [selectedItems, userSession])
+  }), [selectedItems, userSession])
   return(
     <div className="flex-grow-1">
      <div className="pane-heading d-flex justify-content-between">

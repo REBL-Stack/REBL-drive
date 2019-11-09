@@ -206,16 +206,9 @@ export function useTrash (drive) {
 export function useSelection (drive, pane) {
   // pane is string
   const [selection, setSelected, isSelected] = useCollection(drive, "selection" + (pane || ""))
-  const toggle = (item, allowMultiple) => {
-    if (!allowMultiple) {
-      selection.forEach((pathname) => {
-        if (item.pathname != pathname) {
-          setSelected(pathname, false)
-        }
-      })
-    }
-    setSelected(item.pathname, !isSelected(item.pathname) || undefined)
-  }
+  const toggle = useCallback((item, value) => {
+    setSelected(item.pathname, value)
+  },[setSelected])
   return [selection, toggle, item => isSelected(item.pathname) ]
 }
 

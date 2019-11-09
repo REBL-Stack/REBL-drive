@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useCallback} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile, faStar, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { isEmpty } from 'lodash'
@@ -58,6 +58,16 @@ function ItemRow ({item, navigate, selected, favorite, onClick}) {
 export function FilesTable ({drive, items, navigate, pane, isFavorite}) {
   // Show a table of drive items, subset of those in the drive
   const [selection, select, isSelected] = useSelection(drive, pane)
+  const toggle = useCallback(function (pickedItem, allowMultiple) {
+    console.log("TOGGLE:", )
+    if (!allowMultiple) {
+      items.forEach((item) => {
+        if (item != pickedItem) {
+          select(item, false)
+        }
+      })}
+    select(pickedItem, !isSelected(pickedItem))
+  }, [selection, select, isSelected])
   return (
       <table className="table table-hover">
        <thead>
@@ -72,7 +82,7 @@ export function FilesTable ({drive, items, navigate, pane, isFavorite}) {
           const selected = isSelected(item)
           const favorite = isFavorite && isFavorite(item.pathname)
           console.log("FAVORITE:", isFavorite, favorite)
-          return (<ItemRow key={item.name} selected={selected} favorite={favorite} onClick={()=>select(item)} item={item} navigate={navigate}/>
+          return (<ItemRow key={item.name} selected={selected} favorite={favorite} onClick={(e)=>{toggle(item); e.stopPropagation()}} item={item} navigate={navigate}/>
           )})}
        </tbody>
       </table>)
@@ -80,14 +90,14 @@ export function FilesTable ({drive, items, navigate, pane, isFavorite}) {
 
 export default function FilesArea (props) {
   // A FilesTable with a div wrapper to fill display and unselect when clicking outside table
-  const {drive, pane} = props
+  const {drive, pane, items} = props
   const [selection, select, isSelected] = useSelection(drive, pane)
-  const clearSelection = () => {
+  const clearSelection = useCallback(() => {
       console.log("CLEAR:", selection)
-      selection.forEach((item) => {
+      items.forEach((item) => {
         select(item, false)
       })
-    }
+    }, [items, select])
   return (
     <div className="FilesArea w-100 h-100" onClick={clearSelection}>
       <FilesTable {...props}/>

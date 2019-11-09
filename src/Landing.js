@@ -35,7 +35,7 @@ function LandingVault (props) {
   return (
     <div className="Landing">
       <h1 className="landing-heading text-center m-5"><i>d</i>Crypt Vault</h1>
-      <p className="alert alert-dark text-center">
+      <p className="alert alert-dark text-center m-5">
         Keep files securely stored online using strong encryption.
       </p>
       <div className="lead text-center mt-5">
@@ -52,10 +52,10 @@ function LandingVault (props) {
 }
 
 export default function Landing (props) {
-  switch (config.app) {
-    case "dcrypt-vault":
+  switch (config.kind) {
+    case "vault":
       return (<LandingVault/>)
-    case "rebl-cloud":
+    case "cloud":
       return (<LandingCloud/>)
     default:
       return (<div>???</div>)

@@ -50,7 +50,8 @@ export function ExportOption (props) {
   const [selection, select, isSelected] = useSelection(drive, pane)
   return (
       <button type="button" className="btn btn-light rounded-circle"
-            onClick={action}>
+              hidden={!action}
+              onClick={action}>
        <FontAwesomeIcon icon={faDownload}/>
      </button>
   )
