@@ -4,27 +4,35 @@ import App from './App.js'
 import Auth from './Auth.js'
 import ReactBlockstack from 'react-blockstack'
 import { BrowserRouter as Router } from 'react-router-dom'
-
 import { AppConfig } from 'blockstack'
-
-// Require Sass file so webpack can build it
-// import 'bootstrap/dist/css/bootstrap.css'
-
-// Drive:
-// import 'bootswatch/dist/flatly/bootstrap.css'
-
-// Cloud:
-// import 'bootswatch/dist/simplex/bootstrap.css'
-
-// Vault:
-import 'bootswatch/dist/cyborg/bootstrap.css'
-
-import'./styles/style.css'
+import config from './config'
 
 // Activate bootstrap actions
 import $ from 'jquery'
 // import Popper from 'popper.js'
 // import 'bootstrap/dist/js/bootstrap.bundle.min'
+
+switch(config.kind) {
+  case 'drive':
+    import('bootswatch/dist/flatly/bootstrap.css')
+    import('./styles/style.css')
+    break
+
+  case 'cloud':
+    import('bootswatch/dist/simplex/bootstrap.css')
+    import('./styles/style.css')
+    break
+
+  case 'vault':
+    import('bootswatch/dist/cyborg/bootstrap.css')
+    import('./styles/style.css')
+    break
+
+  default:
+    import('bootstrap/dist/css/bootstrap.css')
+    import('./styles/style.css')
+    break
+}
 
 const appConfig = new AppConfig(['store_write', 'publish_data'])
 ReactBlockstack({appConfig})

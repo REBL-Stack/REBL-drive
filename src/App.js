@@ -52,7 +52,7 @@ export default function App (props) {
       {signIn && <Landing />}
       {signOut &&
         <Row className="no-gutters">
-          {configuration.sidebar &&
+          {(configuration.kind != 'vault') &&
           <ColAuto>
             <Sidebar className="border-right">
               <div className="w-100 mt-4 mb-5 ml-5 text-left">
@@ -83,7 +83,7 @@ export default function App (props) {
           </ColAuto>}
           <Col>
             <Navbar className="navbar-dark bg-dark">
-              {!configuration.sidebar &&
+              {(configuration.kind == 'vault') &&
                  <a className="navbar-brand" href="/#">
                    <span className="text-primary mr-2">
                      <FontAwesomeIcon icon={faDharmachakra}/>
@@ -97,7 +97,7 @@ export default function App (props) {
                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                   </> }
               </form>
-              {!configuration.sidebar &&
+              {(configuration.kind == 'vault') &&
               <ActionSelector className="btn-primary mx-auto rounded"
                               createFolder={createFolder}
                               uploadFiles={upload}>
