@@ -69,7 +69,10 @@ main .pane-heading h4 {
 
 main .FavoriteMarker {
   color: var(--success);
-  margin-left: 0.5em;
+}
+
+main table .FavoriteMarker {
+  margin-left: 0.5em;  
 }
 
 main table {

@@ -37,10 +37,11 @@ export function ToggleFavorite (props) {
   const [selection, select, isSelected] = useSelection(drive, pane)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const toggleFavorite = toggler(selection, isFavorite, setFavorite)
+  const checked = selection && isFavorite(selection[0])
   return (
     <button type="button" className="btn btn-light rounded-circle"
           onClick={toggleFavorite}>
-     <FontAwesomeIcon icon={faStar}/>
+     <FontAwesomeIcon className={[checked && "FavoriteMarker"].join(" ")} icon={faStar}/>
    </button>
   )
 }
