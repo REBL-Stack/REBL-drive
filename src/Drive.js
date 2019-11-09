@@ -54,8 +54,7 @@ export default function Drive ({drive, navigate}) {
      <div className="pane-heading d-flex justify-content-between">
        <Breadcrumb title={title} trail={current} onClick={navigate}/>
        <ActionBar className="mr-4" drive={drive} pane={null}>
-         {false &&
-          <DownloadAction drive={drive}/>}
+         <DownloadAction drive={drive}/>
          {(kind != 'vault') &&
           <ToggleTrash drive={drive}/>}
          {(kind != 'vault') &&
