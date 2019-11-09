@@ -45,13 +45,12 @@ export function ToggleFavorite (props) {
   )
 }
 
-export function DownloadAction (props) {
-  const {drive, pane, children, className} = props
+export function ExportOption (props) {
+  const {drive, pane, children, className, action} = props
   const [selection, select, isSelected] = useSelection(drive, pane)
-  const downloadAction = () => null
   return (
       <button type="button" className="btn btn-light rounded-circle"
-            onClick={downloadAction}>
+            onClick={action}>
        <FontAwesomeIcon icon={faDownload}/>
      </button>
   )

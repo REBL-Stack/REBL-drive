@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, {useState, useCallback} from 'react'
+import { useBlockstack } from 'react-blockstack'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faFile, faStar, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { isEmpty, drop } from 'lodash'
@@ -8,7 +9,8 @@ import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash,
 import Breadcrumb from "./library/Breadcrumb"
 import config from "./config"
 import FilesTable from './Table'
-import ActionBar, {ToggleTrash, ToggleFavorite, DownloadAction} from './ActionBar'
+import ActionBar, {ToggleTrash, ToggleFavorite, ExportOption} from './ActionBar'
+import FileSaver, { saveAs } from 'file-saver'
 
 const kind = config.kind
 
@@ -43,18 +45,37 @@ function useDrivePath(drive, location) {
 }
 
 export default function Drive ({drive, navigate}) {
+  const pane = null
   const items = useDriveBranch(drive)
   const [current, setCurrent] = useCurrent(drive)
   const [trashed, setTrashed, isTrashed] = useTrash(drive)
   const [favorites, setFavorite, isFavorite] = useFavorites(drive)
   const activeItems = items.filter((item) => !isTrashed(item.pathname))
   const title = drive.title || "Drive"
+  const [selection, select, isSelected] = useSelection(drive, pane)
+  const selectedItems = useDriveItems(drive, selection)
+  const {userSession} = useBlockstack()
+  const exportAction = useCallback(() => {
+    const item = selectedItems[0]  // FIX: export multiple!
+    console.log("ITEM:", item)
+    if (item) {
+      const path = item.pathname
+      const filename = item.name
+      userSession.getFile(path)
+      .then(content => {
+        const blob =  (content && !(content instanceof Blob)) // always text?
+                      ? new Blob([content], {type: "text/plain;charset=utf-8"})
+                      : content
+        saveAs(blob, filename)
+      })
+    }
+  }, [selectedItems, userSession])
   return(
     <>
      <div className="pane-heading d-flex justify-content-between">
        <Breadcrumb title={title} trail={current} onClick={navigate}/>
        <ActionBar className="mr-4" drive={drive} pane={null}>
-         <DownloadAction drive={drive}/>
+          <ExportOption drive={drive} action={exportAction}/>
          {(kind != 'vault') &&
           <ToggleTrash drive={drive}/>}
          {(kind != 'vault') &&
