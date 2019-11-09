@@ -1,5 +1,5 @@
 {
-  "name": "react-blockstack-drive",
+  "name": "dcrypt-vault",
   "version": "0.0.0",
   "description": "A basic Blockstack app using ReactJS",
   "author": "",
@@ -14,14 +14,15 @@
     "@fortawesome/react-fontawesome": "^0.1.7",
     "blockstack": "^19.2.5",
     "file-selector": "^0.1.12",
+    "file-saver": "^2.0.2",
     "filesize": "^5.0.3",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.0",
     "react": "^16.9.0",
     "react-blockstack": "^0.6.3",
     "react-dom": "^16.9.0",
-    "react-router": "^5.0.0",
-    "react-router-dom": "^5.0.1"
+    "react-router": "^5.1.0",
+    "react-router-dom": "^5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

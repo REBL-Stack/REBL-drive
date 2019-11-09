@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolderPlus, faFileUpload } from '@fortawesome/free-solid-svg-icons'
 import {fromEvent} from 'file-selector'
 
-export default function ActionButton (props) {
+export default function ActionSelector (props) {
   const {className, uploadFiles, createFolder} = props
   const fileUploader = useRef(null)
   const folderNameRef = useRef(null)
@@ -24,7 +24,7 @@ export default function ActionButton (props) {
     // not working: dropdownToggleRef.current.dropdown()
   }
   return (
-      <>
+      <div className="ActionSelector">
         <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
         <button ref={dropdownToggleRef}
                 className={["btn dropdown-toggle", className].join(" ")}
@@ -32,6 +32,8 @@ export default function ActionButton (props) {
             { props.children }
         </button>
         <div className="dropdown-menu">
+         {createFolder &&
+          <>
           <a className="dropdown-item" href="#">
             <div>
               <FontAwesomeIcon icon={faFolderPlus}/>
@@ -46,11 +48,12 @@ export default function ActionButton (props) {
             </div>
           </a>
           <div className="dropdown-divider"></div>
+          </>}
           <a className="dropdown-item" onClick={ uploadFile }>
             <FontAwesomeIcon icon={faFileUpload}/>
             <span className="ml-2">Upload File</span>
           </a>
         </div>
-      </>
+      </div>
     )
 }

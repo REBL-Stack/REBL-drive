@@ -13,7 +13,6 @@
   min-height: 100vh;
   padding-left: 0em;
   padding-top: 4em;
-  color: #fff;
   transition: all 0.3s;
 }
 
@@ -39,7 +38,6 @@
 .Sidebar .sidebar-header {
     display: none;
     font-size: 0.875rem;
-    color: #6c757d;
     margin-left: 40px;
 }
 
@@ -50,33 +48,33 @@
 .Sidebar ul.components {
     padding: 0;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgb(0,0,0,0.125);
+    /* border-bottom: 1px solid rgb(0,0,0,0.125); */
 }
 
 .Sidebar ul p {
-    color: #fff;
     padding: 10px;
 }
 
 .Sidebar ul li a {
-    padding: 10px;
-    font-size: 1.0em;
-    display: block;
-    text-decoration: none;
-    color: gray;
+  line-height: 3em;
+  padding-left: 2em;
+  font-size: 1.0em;
+  display: block;
+  text-decoration: none;
+  margin-right: 1em;
+  border-top-right-radius: 1.5em;
+  border-bottom-right-radius: 1.5em;
 }
 
 .Sidebar ul .active {
-  color: black;
-  background: #e0e0e0;
+  /* background: #e0e0e0; */
 }
 
 .Sidebar ul .active > a {
-  background: #e0e0e0;
+  /* background: #e0e0e0; */
 }
 
 .Sidebar a[aria-expanded="true"] {
-
     /* background: #f0f0f0;*/
 }
 
@@ -90,12 +88,11 @@
 
 .Sidebar li {
   min-width: 12em;
-  padding-left: 2em;
 }
 
 .Sidebar li a[href="/"] {
     pointer-events: none;
-    color: LightGray;
+    /* color: LightGray; */
 }
 
 .Sidebar ul ul a {
@@ -105,7 +102,7 @@
 }
 
 .Sidebar ul li svg {
-  color: #A56DFF;
+  /* color: #A56DFF; */
   min-width: 2em;
   text-align: center;
 }
@@ -116,12 +113,12 @@
 }
 
 .Sidebar ul li a[href]:hover {
-    color: white;
-    background: gray;
+    /* color: white; */
+    /* background: gray; */
 }
 
 .Sidebar ul li a:not([href]) {
-  color: #aaa;
+  /* color: #aaa; */
 }
 
 /* Extension item */
@@ -133,7 +130,7 @@
 
 .Sidebar .form-group .item-title {
   width: 100%;
-  color: gray;
+  /* color: gray; */
 }
 
 .Sidebar a:not([href]) i {
@@ -163,7 +160,7 @@
 }
 
 .Sidebar input::placeholder {
-  color: #BBB;
+  /* color: #BBB; */
 }
 
 .Sidebar a:not([href]):hover .item-title,

@@ -1,6 +1,17 @@
+body {
+  font-size: larger;
+}
 
 .inspect {
   border: thin solid red;
+}
+
+.inspect .inspect {
+  border: thin solid blue;
+}
+
+.inspect .inspect .inspect {
+  border: thin solid green;
 }
 
 .item-icon {
@@ -9,11 +20,64 @@
 }
 
 .Sidebar {
-  min-width: 20em;
+  min-width: 15em;
 }
 
 .Landing {
   max-width: 40em;
   margin: auto;
   font-size: larger;
+}
+
+.Sidebar ul li {
+  border-radius: 10px;
+}
+
+/* Navbar */
+
+ul.breadcrumb {
+    border: none;
+}
+
+.ActionBar button {
+  margin-left: 1em;
+  margin-top: 0.5rem;
+}
+
+/* main area */
+
+main {
+  min-height: 100vh;
+}
+
+main .pane-heading {
+  min-height: 4.5em;
+  font-weight: bold;
+  border-bottom: thin solid var(--light);
+}
+
+main .pane-heading h4 {
+  margin-left: 0.75rem;
+  padding-top: 0.75rem;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+main .FavoriteMarker {
+  color: var(--success);
+  margin-left: 0.5em;
+}
+
+main table {
+  table-layout: fixed
+}
+
+main table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ActionSelector .dropdown-menu {
+  min-height: 4em;
 }
