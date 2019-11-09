@@ -44,6 +44,18 @@ function useDrivePath(drive, location) {
   return(path || [])
 }
 
+function exportItem (userSession, driveItem) {
+  const {pathname, name} = driveItem
+  userSession.getFile(pathname)
+  .then(content => {
+    const blob =  (content && !(content instanceof Blob)) // always text?
+                  ? new Blob([content], {type: "text/plain;charset=utf-8"})
+                  : content
+    saveAs(blob, name)
+  })
+  .catch(err => console.warn("Failed to export:", err))
+}
+
 export default function Drive ({drive, navigate}) {
   const pane = null
   const items = useDriveBranch(drive)
@@ -59,15 +71,7 @@ export default function Drive ({drive, navigate}) {
     const item = selectedItems[0]  // FIX: export multiple!
     console.log("ITEM:", item)
     if (item) {
-      const path = item.pathname
-      const filename = item.name
-      userSession.getFile(path)
-      .then(content => {
-        const blob =  (content && !(content instanceof Blob)) // always text?
-                      ? new Blob([content], {type: "text/plain;charset=utf-8"})
-                      : content
-        saveAs(blob, filename)
-      })
+      exportItem(userSession, item)
     }
   }, [selectedItems, userSession])
   return(
