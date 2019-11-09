@@ -75,7 +75,7 @@ export default function Drive ({drive, navigate}) {
     }
   }, [selectedItems, userSession])
   return(
-    <>
+    <div className="flex-grow-1">
      <div className="pane-heading d-flex justify-content-between">
        <Breadcrumb title={title} trail={current} onClick={navigate}/>
        <ActionBar className="mr-4" drive={drive} pane={null}>
@@ -86,6 +86,8 @@ export default function Drive ({drive, navigate}) {
           <ToggleFavorite drive={drive}/>}
        </ActionBar>
      </div>
-     <FilesTable drive={drive} items={activeItems} navigate={navigate} isFavorite={isFavorite}/>
-    </>)
+     <div className="h-100">
+       <FilesTable drive={drive} items={activeItems} navigate={navigate} isFavorite={isFavorite}/>
+     </div>
+    </div>)
 }

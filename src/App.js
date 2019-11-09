@@ -106,7 +106,7 @@ export default function App (props) {
               </ActionSelector>}
               <Auth/>
             </Navbar>
-            <main className="bg-light">
+            <main className="bg-light d-flex">
               <ErrorBoundary>
                 <Switch>
                   <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>

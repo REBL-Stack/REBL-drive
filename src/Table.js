@@ -55,7 +55,7 @@ function ItemRow ({item, navigate, selected, favorite, onClick}) {
   )
 }
 
-export default function FilesTable ({drive, items, navigate, pane, isFavorite}) {
+export function FilesTable ({drive, items, navigate, pane, isFavorite}) {
   // Show a table of drive items, subset of those in the drive
   const [selection, select, isSelected] = useSelection(drive, pane)
   return (
@@ -76,4 +76,22 @@ export default function FilesTable ({drive, items, navigate, pane, isFavorite}) 
           )})}
        </tbody>
       </table>)
+}
+
+export default function FilesArea (props) {
+  // A FilesTable with a div wrapper to fill display and unselect when clicking outside table
+  const {drive, pane} = props
+  const [selection, select, isSelected] = useSelection(drive, pane)
+  const clearSelection = () => {
+      console.log("CLEAR:", selection)
+      selection.forEach((item) => {
+        select(item, false)
+      })
+    }
+  return (
+    <div className="FilesArea w-100 h-100" onClick={clearSelection}>
+      <FilesTable {...props}/>
+    </div>
+  )
+
 }
