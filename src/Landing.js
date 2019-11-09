@@ -17,7 +17,7 @@ function LandingCloud (props) {
       <p>Part of the <a href="https://cantbeevil.app">Can't Be Evil</a> collection
       of apps on the Blockstack platform.</p>
       </div>
-      <div className="lead text-center mt-5">
+      <div className="lead text-center my-5">
         <button
           className="btn btn-primary btn-lg"
           id="signin-button"
