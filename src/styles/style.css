@@ -37,6 +37,10 @@ body {
   border-radius: 10px;
 }
 
+main {
+  min-height: 100vh;
+}
+
 /* Navbar */
 
 ul.breadcrumb {
@@ -48,12 +52,6 @@ ul.breadcrumb {
   margin-top: 0.5rem;
 }
 
-/* main area */
-
-main {
-  min-height: 100vh;
-}
-
 main .pane-heading {
   min-height: 4.5em;
   font-weight: bold;
@@ -61,18 +59,21 @@ main .pane-heading {
 }
 
 main .pane-heading h4 {
-  margin-left: 0.75rem;
-  padding-top: 0.75rem;
+  margin-left: 0.85rem;
+  padding-top: 0.85rem;
   font-size: 1em;
-  font-weight: bold;
+  font-weight: 700;
+  color: gray;
 }
+
+/* pane area */
 
 main .FavoriteMarker {
   color: var(--success);
 }
 
 main table .FavoriteMarker {
-  margin-left: 0.5em;  
+  margin-left: 0.5em;
 }
 
 main table {
