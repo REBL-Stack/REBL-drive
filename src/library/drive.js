@@ -138,7 +138,7 @@ export function useFileMeta (driveItem) {
   const url = useFileUrl(pathname)
   const init = {method: "GET", headers: new Headers({"User-Agent": "curl/7.43.0", "Accept":"*/*"})}
   const response = useFetch(pathname, init)
-  console.log("Response:", pathname, !!content, url, response)
+  // console.log("Response:", pathname, !!content, url, response)
   const modified = response && response.headers.get("Last-Modified")
   const size = response && response.headers.get("Content-Length")
   const deleteFile = () => setContent(null)
@@ -180,7 +180,10 @@ function useCollectionAtom (drive, label) {
 }
 
 function useCollection (drive, label, keep) {
-  // returns an array of keys in the collection, followed by a getter and setter
+  // Returns an array of ids in the collection, followed by a getter and setter.
+  // The getter and setter takes an id as first argument;
+  // The setter takes a value as second argument.
+  // If keep is false, the setter will remove entry if called with a falsy value.
   const [collection, setCollection] = useCollectionAtom(drive, label)
   const setter = useCallback((id, value) => {
     setCollection( collection => (!keep && !value)
@@ -242,7 +245,7 @@ export function useLoadDriveItems(drive) {
   const {root, itemsAtom} = drive
   const files = useFiles(root)
   const [items, setItems] = useStateAtom(itemsAtom)
-  console.log("Load Drive Items:", root, itemsAtom, items)
+  // console.log("Load Drive Items:", root, itemsAtom, items)
   useEffect( () => {
     if (files) {
       const tree = files && groupFiles(files)
@@ -318,7 +321,7 @@ export function useDrive () {
   // const setDir = (dir) => swap(driveAtom, (drive => new Drive(merge({}, drive, {dir: dir}))))
   const [upload, uploadStatus] = useUpload(drive)
   const items = useLoadDriveItems(drive)
-  console.log("Loaded drive items:", items)
+  // console.log("Loaded drive items:", items)
   const dispatch = (event) => {
     console.log("Dispatch:", event)
     switch (event.action) {

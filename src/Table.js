@@ -15,7 +15,7 @@ function FavoriteMarker ({hidden}) {
 function FileRow ({dir, name, item, favorite, selected, onClick}) {
   const meta = useFileMeta(item)
   const {url, modified, size, deleteFile} = meta
-  console.log("FILEMETA:", item, meta)
+  // console.log("FILEMETA:", item, meta)
   const date = modified && new Date(modified)
   const dateOptions = {month: "short", day: "numeric", year: "numeric"}
   return (
@@ -55,11 +55,11 @@ function ItemRow ({item, navigate, selected, favorite, onClick}) {
   )
 }
 
-export function FilesTable ({drive, items, navigate, pane, isFavorite}) {
+export function FilesTable ({drive, pane, items, navigate, isFavorite}) {
   // Show a table of drive items, subset of those in the drive
   const [selection, select, isSelected] = useSelection(drive, pane)
   const toggle = useCallback(function (pickedItem, allowMultiple) {
-    console.log("TOGGLE:", )
+    console.log("TOGGLE:", pickedItem)
     if (!allowMultiple) {
       items.forEach((item) => {
         if (item != pickedItem) {
