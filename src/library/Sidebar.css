@@ -9,7 +9,9 @@
 
 .Sidebar {
   position: sticky;
+  z-index: 1;
   top: 0;
+  bottom: 0;
   min-height: 100vh;
   padding-left: 0em;
   padding-top: 4em;
@@ -55,15 +57,12 @@
     padding: 10px;
 }
 
-.Sidebar ul li a {
-  line-height: 3em;
+.Sidebar ul a {
   padding-left: 2em;
   font-size: 1.0em;
   display: block;
   text-decoration: none;
   margin-right: 1em;
-  border-top-right-radius: 1.5em;
-  border-bottom-right-radius: 1.5em;
 }
 
 .Sidebar ul .active {
@@ -86,7 +85,7 @@
   transition: 0.5s;
 }
 
-.Sidebar li {
+.Sidebar li, .Sidebar a {
   min-width: 12em;
 }
 
@@ -101,7 +100,7 @@
     /*background: #f0f0f0;*/
 }
 
-.Sidebar ul li svg {
+.Sidebar ul svg {
   /* color: #A56DFF; */
   min-width: 2em;
   text-align: center;
@@ -120,58 +119,6 @@
 .Sidebar ul li a:not([href]) {
   /* color: #aaa; */
 }
-
-/* Extension item */
-
-.Sidebar a:not([href]) {
-  display: flex !important;
-  align-items: center;
-}
-
-.Sidebar .form-group .item-title {
-  width: 100%;
-  /* color: gray; */
-}
-
-.Sidebar a:not([href]) i {
-  flex-grow: 0;
-  align-items: center;
-}
-
-.Sidebar a:not([href]) .form-group {
-  flex-grow: 1;
-  min-height: 1em;
-  margin: 0;
-}
-
-.Sidebar a:not([href]) input {
-  width: calc(100% + 6px);
-  padding: 0;
-  height: 1.5em;
-  display: none;
-  margin-left: -3px;
-  margin-right: -6px;
-  padding-left:2px;
-}
-
-.Sidebar a:not([href]):hover input,
-.Sidebar a:not([href]) input:focus {
-  display: block;
-}
-
-.Sidebar input::placeholder {
-  /* color: #BBB; */
-}
-
-.Sidebar a:not([href]):hover .item-title,
-.Sidebar a:not([href]) input:focus + .item-title {
-  height: 0;
-  color: red;
-  display: block;
-  line-height:0;
-  overflow: hidden;
-}
-
 
 /* Sidebar for mobile (small )*/
 

@@ -21,7 +21,9 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
   return (
     <tr className={["FileRow", selected && "table-active"].join(" ")} onClick={onClick}>
       <td>
-        <span className="item-icon"><FontAwesomeIcon icon={faFile}/></span>
+        <span className="item-icon">
+          <FontAwesomeIcon className="text-secondary" icon={faFile}/>
+        </span>
         <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
         <FavoriteMarker hidden={!favorite}/>
       </td>
@@ -36,7 +38,9 @@ function DirRow ({item, name, onOpen, selected, favorite, onClick}) {
   return (
     <tr className={["DirRow", selected && "table-active"].join(" ")} onClick={onClick}>
        <td className="text-left">
-         <span className="item-icon"><FontAwesomeIcon icon={faFolder}/></span>
+         <span className="item-icon">
+           <FontAwesomeIcon className="text-secondary" icon={faFolder}/>
+         </span>
          <a href="#" onClick={onOpen && (() => onOpen({item: item}))}>{name}</a>
          <FavoriteMarker hidden={!favorite}/>
        </td>

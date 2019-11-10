@@ -5,7 +5,7 @@ import "./Sidebar.css"
 
 export function Menu (props) {
   return (
-    <ul className="list-unstyled components">
+    <ul className="list-unstyled list-group components">
       {props.children}
     </ul>
   )
@@ -13,11 +13,20 @@ export function Menu (props) {
 
 export function MenuItem (props) {
   return (
-    <li>
+    <NavLink className="list-group-item" to={props.target}>{props.children}</NavLink>
+  )
+}
+
+
+/*
+export function MenuItem (props) {
+  return (
+    <li className="list-group-item">
       <NavLink to={props.target}>{props.children}</NavLink>
     </li>
   )
 }
+*/
 
 export default function Sidebar (props) {
   return (

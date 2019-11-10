@@ -33,7 +33,7 @@ export default function Auth (props) {
       <div className="Auth">
          { signOut ?
           <div className="btn-group dropdown">
-            <button className="btn text-muted dropdown-toggle"
+            <button className="btn text-light dropdown-toggle"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="avatar">
                 {avatarUrl ?

@@ -17,13 +17,14 @@ const app = configuration.kind
 
 function Footer (props) {
   return (
-  <footer className="text-center bg-dark py-5">
+  <footer className="text-center bg-dark text-light py-5">
     <p>Learn more about encryption with the <a href="https://dcrypt.app"><i>d</i>Crypt</a> app.</p>
     <p className="m-0 mt-2">
       Made with <FontAwesomeIcon icon={faHeart}/> in San Francisco</p>
+    { app == "vault" &&
     <p className="m-0">
       <a href="mailto:hello@dcrypt.app">hello@dcrypt.app</a>
-    </p>
+    </p>}
   </footer>)
 }
 
@@ -47,7 +48,7 @@ function AppNavbar (props) {
   const history = useHistory()
   const goHome = () => (history && history.push("/home"))
   return(
-  <Navbar className={["navbar-dark bg-dark", className].join(" ")}>
+  <Navbar className={["navbar-dark bg-dark text-light", className].join(" ")}>
     {(configuration.kind == 'vault') &&
        <a className="navbar-brand" onClick={goHome}>
          <span className="text-primary mr-2">
@@ -61,7 +62,7 @@ function AppNavbar (props) {
                style={{fontSize: "120%", opacity: "0.8"}}>
            <FontAwesomeIcon icon={faCloud}/>
          </span>
-          REBL Cloud
+         <span className="text-white">REBL Cloud</span>
        </a>}
     <form className="form-inline my-2 my-lg-0">
       { false &&
@@ -123,12 +124,10 @@ function AppPage () {
   useConfig()
   return(
   <>
-   <Row className="no-gutters">
-     <Col>
-       <AppNavbar className="fixed-top"/>
-       <AppNavbar className="invisible"/>
-     </Col>
-   </Row>
+   <div>
+     <AppNavbar className="fixed-top"/>
+     <AppNavbar className="invisible"/>
+   </div>
    <Row className="no-gutters">
     {(configuration.kind != 'vault') &&
     <ColAuto>
