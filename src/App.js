@@ -44,14 +44,24 @@ function AppActionSelector (props) {
 
 function AppNavbar (props) {
   const {className} = props
+  const history = useHistory()
+  const goHome = () => (history && history.push("/home"))
   return(
   <Navbar className={["navbar-dark bg-dark", className].join(" ")}>
     {(configuration.kind == 'vault') &&
-       <a className="navbar-brand" href="/#">
+       <a className="navbar-brand" onClick={goHome}>
          <span className="text-primary mr-2">
            <FontAwesomeIcon icon={faDharmachakra}/>
          </span>
           <i>d</i>Crypt Vault
+       </a>}
+    {(configuration.kind == 'cloud') &&
+       <a className="navbar-brand" onClick={goHome}>
+         <span className="text-primary mr-2"
+               style={{fontSize: "120%", opacity: "0.8"}}>
+           <FontAwesomeIcon icon={faCloud}/>
+         </span>
+          REBL Cloud
        </a>}
     <form className="form-inline my-2 my-lg-0">
       { false &&
@@ -128,6 +138,7 @@ function AppPage () {
       <main className="bg-light d-flex flex-column">
         <ErrorBoundary>
           <Switch>
+            <Route path="/home" render={(props) => <Landing />}/>
             <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
             <Route path="/favorites" render={(props) => <Favorites drive={drive} navigate={navigate}/>}/>
             <Route path="/shared" render={(props) => <Shared drive={drive} navigate={navigate}/>}/>

@@ -5,7 +5,7 @@ import { faHdd, faStar, faShare, faTrash, faPlus, faCloud } from '@fortawesome/f
 import config from './config'
 
 function LandingCloud (props) {
-  const { signIn } = useBlockstack()
+  const { signIn, signOut } = useBlockstack()
   return (
     <div className="Landing">
       <h1 className="landing-heading text-center m-5">
@@ -13,10 +13,11 @@ function LandingCloud (props) {
       </h1>
       <div className="alert alert-dark text-center m-5">
       <FontAwesomeIcon icon={faCloud} style={{fontSize: "6em", opacity: "0.3"}}/>
-      <p>Free cloud storage of your files, safely encrypted for your eyes only.</p>
+      <p>Free cloud storage of your files, safely encrypted for&nbsp;your&nbsp;eyes&nbsp;only.</p>
       <p>Part of the <a href="https://cantbeevil.app">Can't Be Evil</a> collection
-      of apps on the Blockstack platform.</p>
+      of apps on the Blockstack&nbsp;platform.</p>
       </div>
+      {(signIn || !signOut) &&
       <div className="lead text-center my-5">
         <button
           className="btn btn-primary btn-lg"
@@ -25,7 +26,7 @@ function LandingCloud (props) {
           onClick={ signIn }>
           Sign In with Blockstack
         </button>
-      </div>
+      </div>}
     </div>
   )
 }
