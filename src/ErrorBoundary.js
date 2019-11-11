@@ -1,4 +1,6 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCloudMeatball } from '@fortawesome/free-solid-svg-icons'
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -19,7 +21,11 @@ export default class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
+      return (
+        <div className="h-100 w-100 text-center pt-5">
+          <FontAwesomeIcon className="text-warning"
+             icon={faCloudMeatball} style={{fontSize: "5em"}}/>
+        </div>)
     }
 
     return this.props.children;

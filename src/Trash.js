@@ -6,7 +6,7 @@ import filesize from 'filesize'
 import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
          useDriveItems, useDriveItem, useCurrent, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
 import ActionBar, { ToggleTrash } from './ActionBar'
-import FilesTable from './Table'
+import FilesArea from './Table'
 
 export default function Trash ({drive, navigate}) {
   const pane = "trash"
@@ -24,6 +24,7 @@ export default function Trash ({drive, navigate}) {
            <ToggleTrash drive={drive} pane={pane} items={trashActionItems}/>}
         </ActionBar>
       </div>
-      <FilesTable drive={drive} items={items} pane="trash" navigate={navigate}/>
+      {!isEmpty(items) &&
+        <FilesArea drive={drive} items={items} pane="trash" navigate={navigate}/>}
     </>)
 }

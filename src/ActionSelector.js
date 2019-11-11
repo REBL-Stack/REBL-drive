@@ -25,6 +25,7 @@ export default function ActionSelector (props) {
   }
   return (
       <div className="ActionSelector">
+        {/* FIX: Use file-selector instead ??? */}
         <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
         <button ref={dropdownToggleRef}
                 className={["btn dropdown-toggle", className].join(" ")}

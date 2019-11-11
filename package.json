@@ -1,7 +1,7 @@
 {
   "name": "REBL-Drive-Foundation",
   "version": "0.1.0",
-  "description": "A basic Blockstack app using ReactJS",
+  "description": "A Blockstack starter app using ReactJS",
   "author": "",
   "license": "MIT",
   "repository": {
@@ -21,6 +21,7 @@
     "popper.js": "^1.16.0",
     "react": "^16.9.0",
     "react-blockstack": "^0.6.3",
+    "react-dropzone": "^10.1.10",
     "react-dom": "^16.9.0",
     "react-router": "^5.1.0",
     "react-router-dom": "^5.1.0"

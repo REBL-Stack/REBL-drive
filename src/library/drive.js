@@ -90,20 +90,21 @@ function useStateAtom(atom) {
 /* ================================================= */
 
 function useFiles (dir) {
-  // Files in a specific subpath
+  // Files in a specific subpath; undefined if not determined yet.
   const {userSession, userData} = useBlockstack()
-  const [files, setFiles] = useState()
+  const [files, setFiles] = useState(undefined)
   const dirpath = dir && dir.join("/") + "/"
-  console.log("USE FILES:", dirpath)
   useEffect( () => {
-    if (dirpath && userData) {
+    if (dirpath && !!userData) {
+      console.log("Find matching files:", dirpath)
+      //FIX: async so need to be cancellable!
       matchingFiles(userSession, dirpath).then(setFiles)
-      // Fix: need to be able to cancel
     } else {
+      console.log("Reset files to null")
       setFiles(null)
     }
-  },[userSession, userData, dirpath])
-  return(files || [])
+  },[userSession, !!userData, dirpath])
+  return(files)
 }
 
 function groupReducer (obj, path) {
@@ -212,7 +213,7 @@ export function useSelection (drive, pane) {
   const toggle = useCallback((item, value) => {
     setSelected(item.pathname, value)
   },[setSelected])
-  return [selection, toggle, item => isSelected(item.pathname) ]
+  return [selection, toggle, item => item && isSelected(item.pathname) ]
 }
 
 export function useFavorite(driveItem) {
@@ -245,13 +246,14 @@ export function useLoadDriveItems(drive) {
   const {root, itemsAtom} = drive
   const files = useFiles(root)
   const [items, setItems] = useStateAtom(itemsAtom)
-  // console.log("Load Drive Items:", root, itemsAtom, items)
+  console.log("Refresh Drive Items:", files)
   useEffect( () => {
     if (files) {
+      console.log("Load Drive Items:", files)
       const tree = files && groupFiles(files)
       setItems(tree && asDriveItemsList(drive, tree))
     }
-  },[files])
+  },[files, setItems])
   return (items)
 }
 
@@ -271,7 +273,12 @@ export function useDriveItems (drive, ids) {
   // OUT: Array of matching drive items, in same order
   const {itemsAtom} = drive
   const [items, setItems] = useStateAtom(itemsAtom)
-  return (isNil(ids) ? items : map(ids, (id) => _.find(items, (item) => (item.pathname == id))))
+  const findItem = function (id) {
+    const item = _.find(items, (item) => (item.pathname == id))
+    if (!item) {console.warn("No drive item for id", id, items)}
+    return (item)
+  }
+  return (isNil(ids) ? items : map(ids, findItem).filter((x) => !isNil(x)))
 }
 
 export function useUpload (drive) {
@@ -318,7 +325,6 @@ export function useDrive () {
   // interface and state for access to a drive
   const drive = useAtom(driveAtom)
   const [dir, setDir] = useCurrent(drive)
-  // const setDir = (dir) => swap(driveAtom, (drive => new Drive(merge({}, drive, {dir: dir}))))
   const [upload, uploadStatus] = useUpload(drive)
   const items = useLoadDriveItems(drive)
   // console.log("Loaded drive items:", items)

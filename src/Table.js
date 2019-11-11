@@ -85,7 +85,7 @@ export function FilesTable ({drive, pane, items, navigate, isFavorite}) {
         {items && items.map((item) => {
           const selected = isSelected(item)
           const favorite = isFavorite && isFavorite(item.pathname)
-          console.log("FAVORITE:", isFavorite, favorite)
+          //console.log("FILEITEM:", item, favorite, items)
           return (<ItemRow key={item.name} selected={selected} favorite={favorite} onClick={(e)=>{toggle(item); e.stopPropagation()}} item={item} navigate={navigate}/>
           )})}
        </tbody>
