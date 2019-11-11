@@ -18,15 +18,47 @@ body {
   opacity: 0;
 }
 
-.item-icon {
-  display: inline-block;
-  width: 1.5em;
+/* ===================*/
+
+.App {
+  min-height: 100vh;
 }
 
-.Landing {
+.Landing .container {
   max-width: 40em;
   margin: auto;
   font-size: larger;
+}
+
+.Landing {
+  position: relative;
+  z-index: 1;
+  border: thin solid gray;
+  min-height: 100vh;
+}
+
+.Landing::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .3;
+  z-index: -1;
+  background-image: url(https://rebl.run/media/arthur-edelman-YiZ_C5H0x5Y-unsplash.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.Landing .alert {
+  opacity: 0.9;
+}
+
+.item-icon {
+  display: inline-block;
+  width: 1.5em;
 }
 
 .Auth:not(:hover) {

@@ -18,7 +18,8 @@ const app = configuration.kind
 function Footer (props) {
   return (
   <footer className="text-center bg-dark text-light py-5">
-    <p>Learn more about encryption with the <a href="https://dcrypt.app"><i>d</i>Crypt</a> app.</p>
+    {app == 'vault' &&
+     <p>Learn more about encryption with the <a href="https://dcrypt.app"><i>d</i>Crypt</a> app.</p> }
     <p className="m-0 mt-2">
       Made with <FontAwesomeIcon icon={faHeart}/> in San Francisco</p>
     { app == "vault" &&
@@ -154,11 +155,13 @@ function AppPage () {
 export default function App (props) {
   const { signIn, signOut } = useBlockstack()
   return (
-   <div className="App">
+  <div>
+     <div className="App">
       {!signIn && !signOut && <div>...</div>}
       {signIn && <Landing />}
       {signOut && <AppPage/>}
-      <Footer/>
-  </div>
+     </div>
+     <Footer/>
+   </div>
   )
 }

@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle              , faHdd, faStar, faShare, faTrash, faPlus, faCloud } from '@fortawesome/free-solid-svg-icons'
 import config from './config'
 
-function BlockstackInfo (props) {
+function BlockstackInfo ({className}) {
   return (
-    <div className="text-center mb-5">
-      <p className="mt-2">
-        Who's Blockstack?
-        <button className="btn fas text-primary rounded-circle ml-2"
+    <div className={["text-center", className].join(" ")}>
+      <p className="">
+        <small>Who's Blockstack?</small>
+        <button className="btn fas text-primary rounded-circle ml-1"
            data-toggle="collapse" data-target="#blockstack-login-info">
            <FontAwesomeIcon icon={faInfoCircle} style={{fontSize: "2em"}}/>
         </button>
@@ -29,6 +29,7 @@ function LandingCloud (props) {
   const { signIn, signOut } = useBlockstack()
   return (
     <div className="Landing">
+     <div className="container">
       <h1 className="landing-heading text-center m-5">
         {process.env.REACT_APP_TITLE}
       </h1>
@@ -40,7 +41,7 @@ function LandingCloud (props) {
         of apps on the Blockstack&nbsp;platform.</p>
       </div>
       {(signIn || !signOut) &&
-      <div className="lead text-center my-5">
+      <div className="lead text-center mt-2">
         <button
           className="btn btn-primary btn-lg"
           id="signin-button"
@@ -49,7 +50,8 @@ function LandingCloud (props) {
           Sign In with Blockstack
         </button>
       </div>}
-      <BlockstackInfo/>
+      <BlockstackInfo className="my-2"/>
+     </div>
     </div>
   )
 }
@@ -58,6 +60,7 @@ function LandingVault (props) {
   const { signIn } = useBlockstack()
   return (
     <div className="Landing">
+     <div className="container">
       <h1 className="landing-heading text-center m-5"><i>d</i>Crypt Vault</h1>
       <p className="alert alert-dark text-center m-5">
         Keep files securely stored online using strong encryption.
@@ -71,6 +74,7 @@ function LandingVault (props) {
           Sign In with Blockstack
         </button>
       </div>
+     </div>
     </div>
   )
 }
