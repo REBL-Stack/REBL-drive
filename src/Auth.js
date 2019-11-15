@@ -50,7 +50,7 @@ export default function Auth (props) {
                 <span className="ml-2">Edit Profile</span>
               </a>
               <div className="dropdown-divider"></div>
-              <a className="dropdown-item" onClick={ signOut }>
+              <a className="dropdown-item" href="#" onClick={ signOut }>
                 <FontAwesomeIcon icon={faSignOutAlt}/>
                 <span className="ml-2">Sign out</span>
               </a>

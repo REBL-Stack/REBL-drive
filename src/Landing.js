@@ -19,7 +19,7 @@ function BlockstackInfo ({className}) {
                   <p class="alert alert-info col-md-6 m-auto">
                     <a href="https://blockstack.org" target="_blank">Blockstack</a> is a public benefit corporation,
                     creating a decentralized computing network and app ecosystem
-                    designed to protect digital rights.</p>
+                    designed to protect digital&nbsp;rights.</p>
                 </div>
       </div>
     </div>)

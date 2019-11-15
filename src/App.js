@@ -81,7 +81,7 @@ function AppNavbar (props) {
 function AppSidebar (props) {
   return(
   <Sidebar className="border-right">
-    <div className="w-100 mt-4 pb-5 pl-4 text-left">
+    <div className="w-100 mt-2 mb-5 pl-4 text-left">
       <AppActionSelector/>
     </div>
     <Menu>
