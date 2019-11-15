@@ -37,7 +37,7 @@ function LandingCloud (props) {
         <FontAwesomeIcon className="my-3" icon={faCloud}
             style={{fontSize: "6em", opacity: "0.3"}}/>
         <p>Free cloud storage of your files, safely encrypted for&nbsp;your&nbsp;eyes&nbsp;only.</p>
-        <p>Part of the <a href="https://app.co">Can't Be Evil</a> collection
+        <p hidden={true}>Part of the <a href="https://app.co">Can't Be Evil</a> collection
         of apps on the Blockstack&nbsp;platform.</p>
       </div>
       {(signIn || !signOut) &&
