@@ -10,7 +10,7 @@ export default function ActionSelector (props) {
   const folderNameRef = useRef(null)
   const dropdownToggleRef = useRef(null)
   const [isCreateFolder, setCreateFolder] = useState()
-  const uploadFile =  () => {
+  const uploadFile = () => {
     console.log("Click...")
     fileUploader.current.click()
   }
@@ -23,10 +23,19 @@ export default function ActionSelector (props) {
     createFolder(name)
     // not working: dropdownToggleRef.current.dropdown()
   }
+  const simple = (uploadFiles && !createFolder)
   return (
-      <div className="ActionSelector">
+  <div className="">
+    <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
+    {simple ?
+     <button className="AppActionSelector btn-outline-primary btn-lg ml-0 rounded-button-circle"
+              onClick={ uploadFile }>
+        <FontAwesomeIcon icon={faFileUpload}/>
+        <span className="ml-2">Upload File</span>
+     </button>
+     :
+     <div className="ActionSelector">
         {/* FIX: Use file-selector instead ??? */}
-        <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
         <button ref={dropdownToggleRef}
                 className={["btn dropdown-toggle", className].join(" ")}
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -55,6 +64,6 @@ export default function ActionSelector (props) {
             <span className="ml-2">Upload File</span>
           </a>
         </div>
-      </div>
-    )
+      </div>}
+    </div>)
 }
