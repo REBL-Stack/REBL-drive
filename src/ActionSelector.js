@@ -28,7 +28,7 @@ export default function ActionSelector (props) {
   <div className="">
     <input ref={fileUploader} type="file" onChange={ onFileChange } style={{display: 'none'}}/>
     {simple ?
-     <button className="AppActionSelector btn-outline-primary btn-lg ml-0 rounded-button-circle"
+     <button className="AppActionSelector btn-outline-primary btn-lg ml-0 rounded"
               onClick={ uploadFile }>
         <FontAwesomeIcon icon={faFileUpload}/>
         <span className="ml-2">Upload File</span>

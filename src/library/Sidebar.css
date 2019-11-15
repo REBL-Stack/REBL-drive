@@ -120,10 +120,6 @@
   /* color: #aaa; */
 }
 
-.Sidebar a.disabled {
-  opacity: 0.5;
-}
-
 /* Sidebar for mobile (small )*/
 
 @media (max-width: 576px) {

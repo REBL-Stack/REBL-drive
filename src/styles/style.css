@@ -75,11 +75,16 @@ main {
   min-width: 15em;
 }
 
+.Sidebar .list-group {
+  margin-right: 1em;
+}
+
 .Sidebar ul .list-group-item {
   border-color: transparent;
   border-top-right-radius: 1.5em;
   border-bottom-right-radius: 1.5em;
   line-height: 2em;
+  margin-bottom: 2px;
 }
 
 /* Navbar */

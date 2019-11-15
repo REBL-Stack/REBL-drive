@@ -12,9 +12,11 @@ export function Menu (props) {
 }
 
 export function MenuItem (props) {
-  // disabled if target is faslsy
+  // disabled if target is falsy
   return (
-    <NavLink className={["list-group-item", !props.target && "disabled"].join(" ")}
+    <NavLink className={["list-group-item", "list-group-item-action",
+                         !props.target ? "disabled" : null].join(" ")}
+             tabindex={!props.target ? "-1" : null}
              to={ props.target || "/disabled"}>
       {props.children}
     </NavLink>
