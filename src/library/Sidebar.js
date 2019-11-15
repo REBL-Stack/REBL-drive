@@ -12,8 +12,12 @@ export function Menu (props) {
 }
 
 export function MenuItem (props) {
+  // disabled if target is faslsy
   return (
-    <NavLink className="list-group-item" to={props.target}>{props.children}</NavLink>
+    <NavLink className={["list-group-item", !props.target && "disabled"].join(" ")}
+             to={ props.target || "/disabled"}>
+      {props.children}
+    </NavLink>
   )
 }
 

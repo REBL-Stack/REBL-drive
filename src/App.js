@@ -3,6 +3,8 @@ import { useBlockstack, useFile} from 'react-blockstack'
 import { BrowserRouter as Router, Switch, Route, Redirect, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHdd, faStar, faShare, faTrash, faPlus, faHeart, faCloud, faDharmachakra } from '@fortawesome/free-solid-svg-icons'
+import { isEmpty } from 'lodash'
+import { useFavorites, useTrash } from "./library/drive"
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
 import { useDrive } from './library/drive'
 import Landing from './Landing'
@@ -78,7 +80,9 @@ function AppNavbar (props) {
   </Navbar>)
 }
 
-function AppSidebar (props) {
+function AppSidebar ({drive}) {
+  const [trashed] = useTrash(drive)
+  console.log("TRASHED:", trashed)
   return(
   <Sidebar className="border-right">
     <div className="w-100 mt-2 mb-5 pl-4 text-left">
@@ -88,14 +92,14 @@ function AppSidebar (props) {
       <MenuItem target="/drive">
         <FontAwesomeIcon icon={faHdd}/>My Drive
       </MenuItem>
-      <MenuItem target="/favorites">
+      <MenuItem target={ "/favorites" }>
         <FontAwesomeIcon icon={faStar}/>Favorites
       </MenuItem>
       {false &&
       <MenuItem target="/shared">
         <FontAwesomeIcon icon={faShare}/>Shared
       </MenuItem>}
-      <MenuItem target="/trash">
+      <MenuItem target={!isEmpty(trashed) && "/trash"}>
         <FontAwesomeIcon icon={faTrash}/>Trash
       </MenuItem>
     </Menu>
@@ -132,7 +136,7 @@ function AppPage () {
    <Row className="no-gutters">
     {(configuration.kind != 'vault') &&
     <ColAuto>
-      <AppSidebar/>
+      <AppSidebar drive={drive}/>
     </ColAuto>}
     <Col>
       <main className="bg-light d-flex flex-column">
