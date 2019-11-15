@@ -19,7 +19,8 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
   const date = modified && new Date(modified)
   const dateOptions = {month: "short", day: "numeric", year: "numeric"}
   return (
-    <tr className={["FileRow", selected && "table-active"].join(" ")} onClick={onClick}>
+    <tr className={["FileRow", selected ? "table-active" : null].join(" ")}
+        onClick={onClick}>
       <td>
         <span className="item-icon">
           <FontAwesomeIcon className="text-secondary" icon={faFile}/>

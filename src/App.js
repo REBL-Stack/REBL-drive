@@ -38,7 +38,7 @@ function AppActionSelector (props) {
                        ((name) => dispatch({action: "createFolder", name: name}))
   return (
     <ActionSelector
-         className="btn-outline-primary btn-lg mx-auto rounded-button-circle"
+         className="btn btn-outline-primary btn-lg mx-auto"
          createFolder={createFolder}
          uploadFiles={upload}>
       <FontAwesomeIcon icon={faPlus}/>

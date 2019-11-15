@@ -46,7 +46,7 @@ export function ToggleTrash (props) {
   const checked = items && items[0] && isTrashed(items[0].pathname)
   console.log("TRASH:", checked, items, trashed)
   return (
-    <button type="button" className="btn btn-secondary  rounded-circle"
+    <button type="button" className="btn btn-outline-secondary rounded-circle"
             disabled={!toggle}
             onClick={toggle || undefined}>
       <FontAwesomeIcon icon={checked ? faTrashRestore : faTrash}/>
@@ -61,7 +61,7 @@ export function ToggleFavorite (props) {
   const checked = items && items[0] && isFavorite(items[0].pathname)
   // console.log("FAVORITE TOGGLER:", pane, selection)
   return (
-    <button type="button" className="btn btn-secondary  rounded-circle"
+    <button type="button" className="btn btn-outline-secondary rounded-circle"
           disabled={!toggle}
           onClick={toggle || undefined}>
      <FontAwesomeIcon className={[checked && "FavoriteMarker"].join(" ")} icon={faStar}/>
@@ -73,7 +73,7 @@ export function ExportOption (props) {
   const {drive, pane, children, className, action} = props
   const [selection, select, isSelected] = useSelection(drive, pane)
   return (
-      <button type="button" className="btn btn-secondary rounded-circle"
+      <button type="button" className="btn btn-outline-secondary rounded-circle"
               hidden={!action}
               onClick={action || undefined}>
        <FontAwesomeIcon icon={faDownload}/>

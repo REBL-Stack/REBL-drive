@@ -115,7 +115,7 @@ main .pane-heading h4 {
 /* pane area */
 
 main .FavoriteMarker {
-  color: var(--success);
+  color: var(--yellow);
 }
 
 main table .FavoriteMarker {
@@ -130,6 +130,11 @@ main table td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+table.table a:not([href]) {
+  /* compensate for some bootstrap themes showing these as links */
+  text-decoration: none;
 }
 
 .ActionSelector .dropdown-menu {

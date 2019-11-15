@@ -24,7 +24,7 @@ switch(config.kind) {
     import('./styles/style.css')
     break
 
-  case 'cloud2': // https://fezvrasta.github.io/bootstrap-material-design
+  case 'cloud-': // https://fezvrasta.github.io/bootstrap-material-design
     import('bootstrap-material-design/dist/css/bootstrap-material-design.css')
     /*import('jquery').then((JQuery) => {
       import('bootstrap-material-design/dist/js/bootstrap-material-design.js')
