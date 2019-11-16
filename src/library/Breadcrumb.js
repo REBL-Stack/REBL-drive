@@ -4,7 +4,7 @@ export default function Breadcrumb ({trail, onClick, title}) {
   const goTop = (trail.length > 0) && (() => onClick({path: []}))
   return(
     <nav aria-label="breadcrumb">
-      <ul className="breadcrumb">
+      <ol className="breadcrumb">
         {title &&
          <li key="0" className="breadcrumb-item breadcrumb-title">
            { goTop ? <a href="#" onClick={ goTop }>{title}</a> : title}
