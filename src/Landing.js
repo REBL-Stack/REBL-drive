@@ -65,7 +65,8 @@ function LandingVault (props) {
       <p className="alert alert-dark text-center m-5">
         Keep files securely stored online using strong encryption.
       </p>
-      <div className="lead text-center mt-5">
+      { signIn &&
+       <div className="lead text-center mt-5">
         <button
           className="btn btn-primary btn-lg"
           id="signin-button"
@@ -73,7 +74,7 @@ function LandingVault (props) {
           onClick={ signIn }>
           Sign In with Blockstack
         </button>
-      </div>
+      </div>}
      </div>
     </div>
   )

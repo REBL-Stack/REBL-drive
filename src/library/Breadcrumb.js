@@ -15,7 +15,7 @@ export default function Breadcrumb ({trail, onClick, title}) {
               <a href="#" onClick={() => onClick({path: trail.slice(0, n+1)})}>{trail[n]}</a>
               : trail[n]}
           </li>)}
-      </ul>
+      </ol>
     </nav>
   )
 }

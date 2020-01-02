@@ -57,7 +57,7 @@ function AppNavbar (props) {
          <span className="text-primary mr-2">
            <FontAwesomeIcon icon={faDharmachakra}/>
          </span>
-          <i>d</i>Crypt Vault
+         <span className="text-dark"><i>d</i>Crypt Vault</span>
        </a>}
     {(configuration.kind == 'cloud') &&
        <a className="navbar-brand" onClick={goHome}>
@@ -65,7 +65,7 @@ function AppNavbar (props) {
                style={{fontSize: "120%", opacity: "0.8"}}>
            <FontAwesomeIcon icon={faCloud}/>
          </span>
-         <span className="text-white">REBL Cloud</span>
+         <span className="text-light">REBL Cloud</span>
        </a>}
     <form className="form-inline my-2 my-lg-0">
       { false &&
@@ -74,9 +74,9 @@ function AppNavbar (props) {
          <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </> }
     </form>
-    {(configuration.kind == 'vault') &&
+    {(false && configuration.kind == 'vault') &&
       <AppActionSelector/>}
-    <Auth/>
+    <Auth className="text-white"/>
   </Navbar>)
 }
 
@@ -134,10 +134,9 @@ function AppPage () {
      <AppNavbar className="invisible"/>
    </div>
    <Row className="no-gutters">
-    {(configuration.kind != 'vault') &&
     <ColAuto>
       <AppSidebar drive={drive}/>
-    </ColAuto>}
+    </ColAuto>
     <Col>
       <main className="bg-light d-flex flex-column">
         <ErrorBoundary>

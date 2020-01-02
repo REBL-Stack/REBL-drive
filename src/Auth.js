@@ -30,10 +30,10 @@ export default function Auth (props) {
       console.log("Blockstack inconsistency: Already signed in yet signin is pending");
     }
     return (
-      <div className="Auth">
+      <div className={["Auth", props.className].join(" ")}>
          { signOut ?
           <div className="btn-group dropdown">
-            <button className="btn text-light dropdown-toggle"
+            <button className="btn dropdown-toggle"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="avatar">
                 {avatarUrl ?
