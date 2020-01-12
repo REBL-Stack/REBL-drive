@@ -1,3 +1,4 @@
 /media/* /media/:splat
 /media/app-icon/* /media/app-icon/:splat
+/proxy/* https://:splat
 /* /index.html 200

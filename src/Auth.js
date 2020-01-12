@@ -2,6 +2,7 @@ import React from 'react'
 import { useBlockstack } from 'react-blockstack'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserCircle, faEllipsisV, faUserCog, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
+import { proxyUrl } from './common'
 
 import $ from 'jquery'
 // import Popper from 'popper.js'
@@ -26,9 +27,6 @@ export default function Auth (props) {
     const {userSession, userData, signIn, signOut, person} = useBlockstack()
     const {username} = userData || {}
     const avatarUrl = (person && person.avatarUrl && person.avatarUrl())
-    if ( userSession && userSession.isUserSignedIn() && userSession.isSignInPending()) {
-      console.log("Blockstack inconsistency: Already signed in yet signin is pending");
-    }
     return (
       <div className={["Auth", props.className].join(" ")}>
          { signOut ?
@@ -37,7 +35,7 @@ export default function Auth (props) {
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="avatar">
                 {avatarUrl ?
-                 <img src={ avatarUrl }
+                 <img src={ proxyUrl(avatarUrl) }
                       className="avatar-image" id="avatar-image" />
                  : <FontAwesomeIcon icon={faUserCircle}/>}
                 <span className="username">{ username && username.replace(/.id.blockstack$/, "")}</span>
