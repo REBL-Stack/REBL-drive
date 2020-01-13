@@ -23,7 +23,7 @@ module.exports = function(app) {
       'Access-Control-Allow-Headers': '*',
       'Access-Control-Allow-Methods': 'GET',
       "can't-be-evil": true,
-      "Content-Security-Policy": "default-src 'self'"
+      "Content-Security-Policy": "default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
     });
     next();
   })

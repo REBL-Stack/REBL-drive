@@ -16,7 +16,7 @@ export function MenuItem (props) {
   return (
     <NavLink className={["list-group-item", "list-group-item-action",
                          !props.target ? "disabled" : null].join(" ")}
-             tabindex={!props.target ? "-1" : null}
+             tabIndex={!props.target ? "-1" : null}
              to={ props.target || "/disabled"}>
       {props.children}
     </NavLink>
