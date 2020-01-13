@@ -33,7 +33,10 @@ switch(config.kind) {
     break
 
   case 'vault':
-    import('bootswatch/dist/cyborg/bootstrap.css')
+    //import('bootswatch/dist/cyborg/_variables.scss')
+    import('./styles/cbe-cyborg.scss')
+    //import('bootswatch/dist/cyborg/_bootswatch.scss')
+    // import('bootswatch/dist/cyborg/bootstrap.css')
     import('./styles/style.css')
     break
 
