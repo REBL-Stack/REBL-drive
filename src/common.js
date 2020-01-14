@@ -16,16 +16,17 @@ export function usePerson() {
   useEffect(() => {
     const avatarUrl = (person && person.avatarUrl && person.avatarUrl())
     // const icon = avatarUrl && proxyUrl(avatarUrl)
-    fetch(avatarUrl, {method: "GET", mode: 'cors'})
-      .then((response) => {
-        response.blob()
-        .then((blob) => URL.createObjectURL(blob))
-        .then((url) => setAvatar(url))
-      })
-      .catch((err) => console.warn("Avatar Failed fetching url:", err))
+    if (avatarUrl) {
+      fetch(avatarUrl, {method: "GET", mode: 'cors'})
+        .then((response) => {
+          response.blob()
+          .then((blob) => URL.createObjectURL(blob))
+          .then((url) => setAvatar(url))
+        })
+        .catch((err) => console.warn("Avatar Failed fetching url:", err))
+      }
   }, [person])
   // need better replace here!
   const username2 = username && username.replace(/.id.blockstack$/, "")
-
   return { avatarUrl , username: username2 }
 }

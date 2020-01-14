@@ -33,9 +33,9 @@ function BasicActionBar (props) {
     <ActionBar className={className} drive={drive} pane={pane}>
       {!isEmpty(items) &&
        <ExportOption drive={drive} pane={pane} action={exportAction}/>}
-      {(kind != 'vault' && !isEmpty(items)) &&
+      {(kind != '' && !isEmpty(items)) &&
        <ToggleTrash drive={drive} pane={pane} items={items}/>}
-      {(kind != 'vault' && !isEmpty(items)) &&
+      {(kind != '' && !isEmpty(items)) &&
        <ToggleFavorite drive={drive} pane={pane} items={items}/>}
     </ActionBar>
   )
