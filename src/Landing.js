@@ -17,7 +17,7 @@ function BlockstackInfo ({className}) {
       <div id="blockstack-login-info" class="collapse hide">
                 <div class="row">
                   <p class="alert alert-info col-md-6 m-auto">
-                    <a href="https://blockstack.org" target="_blank">Blockstack</a> is a public benefit corporation,
+                    <a href="https://blockstack.org" target="_blank" rel="noopener noreferrer">Blockstack</a> is a public benefit corporation,
                     creating a decentralized computing network and app ecosystem
                     designed to protect digital&nbsp;rights.</p>
                 </div>

@@ -1,8 +1,8 @@
 import React from 'react'
 import { useBlockstack } from 'react-blockstack'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserCircle, faEllipsisV, faUserCog, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
-import { proxyUrl } from './common'
+import { faUserCircle, faUserSecret, faEllipsisV, faUserCog, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
+import { usePerson } from './common'
 
 import $ from 'jquery'
 // import Popper from 'popper.js'
@@ -25,8 +25,7 @@ export function AuthButton () {
 
 export default function Auth (props) {
     const {userSession, userData, signIn, signOut, person} = useBlockstack()
-    const {username} = userData || {}
-    const avatarUrl = (person && person.avatarUrl && person.avatarUrl())
+    const { avatarUrl, username } = usePerson()
     return (
       <div className={["Auth", props.className].join(" ")}>
          { signOut ?
@@ -35,15 +34,16 @@ export default function Auth (props) {
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <span className="avatar">
                 {avatarUrl ?
-                 <img src={ proxyUrl(avatarUrl) }
+                 <img src={ avatarUrl }
                       className="avatar-image" id="avatar-image" />
-                 : <FontAwesomeIcon icon={faUserCircle}/>}
-                <span className="username">{ username && username.replace(/.id.blockstack$/, "")}</span>
+                 : <FontAwesomeIcon icon={faUserSecret}/>}
+                <span className="username">{ username }</span>
               </span>
               <FontAwesomeIcon icon={faEllipsisV}/>
             </button>
             <div className="dropdown-menu">
-              <a className="dropdown-item" href={profileManagerUrl} target="_blank">
+              <a className="dropdown-item" href={profileManagerUrl}
+                 target="_blank" rel="noopener noreferrer">
                 <FontAwesomeIcon icon={faUserCog}/>
                 <span className="ml-2">Edit Profile</span>
               </a>
