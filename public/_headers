@@ -2,8 +2,6 @@
   Access-Control-Allow-Origin: *
   Access-Control-Allow-Headers: "X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding"
   Access-Control-Allow-Methods: "POST, GET, OPTIONS, DELETE, PUT"
-  Content-Security-Policy: font-src 'self'
-  Content-Security-Policy: style-src 'self'
   can't-be-evil: true
 /
   can't-be-evil: true
@@ -13,6 +11,3 @@
   Access-Control-Allow-Methods: "POST, GET, OPTIONS, DELETE, PUT"
 /*
   can't-be-evil: true
-  Content-Security-Policy: default-src 'self'
-  Content-Security-Policy: font-src 'self'
-  Content-Security-Policy: style-src 'self'

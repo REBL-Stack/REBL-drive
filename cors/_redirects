@@ -1,3 +1,0 @@
-/media/* /media/:splat
-/proxy/* https://:splat
-/* /index.html 200
