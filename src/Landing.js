@@ -25,6 +25,35 @@ function BlockstackInfo ({className}) {
     </div>)
 }
 
+function LandingDrive (props) {
+  const { signIn, signOut } = useBlockstack()
+  return (
+    <div className="Landing">
+     <div className="container">
+      <h1 className="landing-heading text-center m-5">
+        {process.env.REACT_APP_TITLE}
+      </h1>
+      <div className="alert alert-dark text-center m-5">
+        <FontAwesomeIcon className="my-3" icon={faCloud}
+            style={{fontSize: "6em", opacity: "0.3"}}/>
+        <p>Free cloud storage of your files, safely encrypted for&nbsp;your&nbsp;eyes&nbsp;only.</p>
+      </div>
+      {(signIn || !signOut) &&
+      <div className="lead text-center mt-2">
+        <button
+          className="btn btn-primary btn-lg"
+          id="signin-button"
+          disabled={ !signIn }
+          onClick={ signIn }>
+          Sign In with Blockstack
+        </button>
+      </div>}
+      <BlockstackInfo className="my-2"/>
+     </div>
+    </div>
+  )
+}
+
 function LandingCloud (props) {
   const { signIn, signOut } = useBlockstack()
   return (
@@ -87,6 +116,6 @@ export default function Landing (props) {
     case "cloud":
       return (<LandingCloud/>)
     default:
-      return (<div>???</div>)
+      return (<LandingDrive/>)
   }
 }
