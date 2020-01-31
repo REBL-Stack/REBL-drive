@@ -37,7 +37,7 @@ export default function Auth (props) {
                  <img src={ avatarUrl }
                       className="avatar-image" id="avatar-image" />
                  : <FontAwesomeIcon icon={faUserSecret}/>}
-                <span className="username">{ username }</span>
+                <span className="username ml-2">{ username }</span>
               </span>
               <FontAwesomeIcon icon={faEllipsisV}/>
             </button>
