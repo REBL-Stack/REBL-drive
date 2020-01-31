@@ -130,14 +130,16 @@ function AppPage () {
   return(
   <>
    <div>
-      <AppNavbar className="fixed-top"/>
-      { false && <AppNavbar className="invisible"/>}
+
    </div>
    <Row className="no-gutters">
     <ColAuto>
       <AppSidebar drive={drive}/>
+      <AppNavbar className="fixed-top"/>
+      <AppNavbar className="invisible"/>
     </ColAuto>
     <Col>
+      <AppNavbar className="invisible"/>
       <main className="bg-light d-flex flex-column">
         <ErrorBoundary>
           <Switch>
