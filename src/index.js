@@ -16,6 +16,7 @@ switch(config.kind) {
   case 'drive':
     // import('bootstrap-material-design/dist/css/bootstrap-material-design.css')
     import('./styles/bootstrap-material-design.scss')
+    import('./styles/style.css')
     break
 
   case 'cloud':
