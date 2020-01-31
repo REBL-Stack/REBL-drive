@@ -36,8 +36,8 @@ export function MenuItem (props) {
 
 export default function Sidebar (props) {
   return (
-  <div className={["wrapper", props.className].join(" ")}>
-    <nav className="Sidebar collapse navbar-collapse d-sm-block">
+  <div className="wrapper">
+    <nav className={["Sidebar collapse navbar-collapse d-sm-block", props.className].join(" ")}>
       <div id="sidebarContent" className="">
         {props.children}
       </div>

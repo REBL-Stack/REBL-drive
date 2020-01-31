@@ -8,4 +8,13 @@ $web-font-path: ""; // eliminate google font
 
 $font-family-sans-serif: 'Helvetica', 'Arial', sans-serif !default;
 
-@import "~bootstrap-material-design/scss/_core.scss"
+@import "~bootstrap-material-design/scss/_core.scss";
+
+.Sidebar {
+    z-index: 1000;
+    padding-top: 8em;
+}
+
+.Sidebar .list-group-item-action:not(.disabled):not(:hover){
+  color: white;
+}

@@ -76,7 +76,7 @@ export function FilesTable ({drive, pane, items, navigate, isFavorite}) {
   return (
       <table className="table table-hover">
        <thead>
-       <tr className="">
+       <tr className="d-none">
          <th>Name</th>
          <th>Modified</th>
          <th>Size</th>

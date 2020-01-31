@@ -51,7 +51,7 @@ function AppNavbar (props) {
   const history = useHistory()
   const goHome = () => (history && history.push("/home"))
   return(
-  <Navbar className={["navbar-dark bg-dark text-light", className].join(" ")}>
+  <Navbar className={["navbar-light bg-light text-dark", className].join(" ")}>
     {(configuration.kind == 'vault') &&
        <a className="navbar-brand" onClick={goHome}>
          <span className="text-primary mr-2">
@@ -84,8 +84,8 @@ function AppSidebar ({drive}) {
   const [trashed] = useTrash(drive)
   console.log("TRASHED:", trashed)
   return(
-  <Sidebar className="border-right">
-    <div className="w-100 mt-2 mb-5 pl-4 text-left">
+  <Sidebar className="border-right navbar-dark bg-dark text-light">
+    <div className="w-100 mt-2 mb-5 pl-4 pr-4 text-left">
       <AppActionSelector/>
     </div>
     <Menu>
@@ -130,8 +130,8 @@ function AppPage () {
   return(
   <>
    <div>
-     <AppNavbar className="fixed-top"/>
-     <AppNavbar className="invisible"/>
+      <AppNavbar className="fixed-top"/>
+      { false && <AppNavbar className="invisible"/>}
    </div>
    <Row className="no-gutters">
     <ColAuto>
