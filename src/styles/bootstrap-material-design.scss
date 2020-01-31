@@ -1,0 +1,11 @@
+// https://fezvrasta.github.io/bootstrap-material-design
+//  bootstrap-material-design/dist/css/bootstrap-material-design.css
+
+// Override variable from imported ~bootstrap/scss/bootstrap
+$web-font-path: ""; // eliminate google font
+
+// Redefine variable in "~bootstrap-material-design/scss/variables/bootstrap/type.scss"
+
+$font-family-sans-serif: 'Helvetica', 'Arial', sans-serif !default;
+
+@import "~bootstrap-material-design/scss/_core.scss"

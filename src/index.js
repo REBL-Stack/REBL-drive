@@ -14,8 +14,8 @@ import $ from 'jquery'
 
 switch(config.kind) {
   case 'drive':
-    import('bootswatch/dist/flatly/bootstrap.css')
-    import('./styles/style.css')
+    // import('bootstrap-material-design/dist/css/bootstrap-material-design.css')
+    import('./styles/bootstrap-material-design.scss')
     break
 
   case 'cloud':
@@ -25,7 +25,7 @@ switch(config.kind) {
     break
 
   case 'cloud-': // https://fezvrasta.github.io/bootstrap-material-design
-    import('bootstrap-material-design/dist/css/bootstrap-material-design.css')
+    import('bootswatch/dist/flatly/bootstrap.css')
     /*import('jquery').then((JQuery) => {
       import('bootstrap-material-design/dist/js/bootstrap-material-design.js')
       import('./styles/style.css')
