@@ -10,11 +10,22 @@ $font-family-sans-serif: 'Helvetica', 'Arial', sans-serif !default;
 
 @import "~bootstrap-material-design/scss/_core.scss";
 
+.wrapper {
+  position: sticky;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+
+}
+
 .Sidebar {
-    z-index: 1000;
-    padding-top: 8em;
+    padding-top: 12em;
 }
 
 .Sidebar .list-group-item-action:not(.disabled):not(:hover){
   color: white;
+}
+
+.github-fork-ribbon::before {
+  background-color: none;
 }

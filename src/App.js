@@ -14,6 +14,7 @@ import Auth from './Auth'
 import ActionSelector from './ActionSelector'
 import ErrorBoundary from './ErrorBoundary'
 import configuration from './config' // FIX: Conflicting naming with user config
+import 'github-fork-ribbon-css/gh-fork-ribbon.css'
 
 const app = configuration.kind
 
@@ -82,7 +83,7 @@ function AppNavbar (props) {
 
 function AppSidebar ({drive}) {
   const [trashed] = useTrash(drive)
-  console.log("TRASHED:", trashed)
+  // console.log("TRASHED:", trashed)
   return(
   <Sidebar className="border-right navbar-dark bg-dark text-light">
     <div className="w-100 mt-2 mb-5 pl-4 pr-4 text-left">
@@ -129,9 +130,12 @@ function AppPage () {
   useConfig()
   return(
   <>
-   <div>
-
-   </div>
+    <a className="github-fork-ribbon left-top"
+        href="https://github.com/REBL-Stack/REBL-drive"
+        data-ribbon="Fork me on GitHub"
+        title="Fork me on GitHub">
+       Fork me on GitHub
+   </a>
    <Row className="no-gutters">
     <ColAuto>
       <AppSidebar drive={drive}/>
