@@ -81,7 +81,8 @@ export function ExportOption (props) {
   )
 }
 
-export default function ActionBar (props) {
+function ActionBarElement (props) {
+  // TODO: Merge with ActionBar
   const {drive, pane, children, className} = props
   const [selection, select, isSelected] = useSelection(drive, pane)
   console.log("SELECTION:", selection, !isEmpty(selection))
@@ -89,5 +90,19 @@ export default function ActionBar (props) {
     <div className={["ActionBar", className].join(" ")}>
       {!isEmpty(selection) && children}
     </div>
+  )
+}
+
+export default function ActionBar (props) {
+  const {className, drive, pane, items, exportAction} = props
+  return(
+    <ActionBarElement className={className} drive={drive} pane={pane}>
+      {!isEmpty(items) &&
+       <ExportOption drive={drive} pane={pane} action={exportAction}/>}
+      {(!isEmpty(items)) &&
+       <ToggleTrash drive={drive} pane={pane} items={items}/>}
+      {(!isEmpty(items)) &&
+       <ToggleFavorite drive={drive} pane={pane} items={items}/>}
+    </ActionBarElement>
   )
 }
