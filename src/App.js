@@ -83,6 +83,7 @@ function AppNavbar (props) {
 
 function AppSidebar ({drive}) {
   const [trashed] = useTrash(drive)
+  const [favorites] = useFavorites(drive)
   // console.log("TRASHED:", trashed)
   return(
   <Sidebar className="border-right navbar-dark bg-dark text-light">
@@ -93,7 +94,7 @@ function AppSidebar ({drive}) {
       <MenuItem target="/drive">
         <FontAwesomeIcon icon={faHdd}/>My Drive
       </MenuItem>
-      <MenuItem target={ "/favorites" }>
+      <MenuItem target={!isEmpty(favorites) && "/favorites" }>
         <FontAwesomeIcon icon={faStar}/>Favorites
       </MenuItem>
       {false &&

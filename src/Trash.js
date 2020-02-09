@@ -5,7 +5,7 @@ import { isEmpty, drop, intersection } from 'lodash'
 import filesize from 'filesize'
 import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
          useDriveItems, useDriveItem, useCurrent, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
-import ActionBar, { ToggleTrash } from './ActionBar'
+import ActionBar from './ActionBar'
 import FilesArea from './Table'
 
 export default function Trash ({drive, navigate}) {
@@ -19,10 +19,7 @@ export default function Trash ({drive, navigate}) {
     <>
       <div className="pane-heading d-flex justify-content-between">
         <h4>Trash</h4>
-        <ActionBar className="mr-4" drive={drive} pane={pane}>
-          {!isEmpty(trashActionItems) &&
-           <ToggleTrash drive={drive} pane={pane} items={trashActionItems}/>}
-        </ActionBar>
+        <ActionBar className="mr-4" drive={drive} pane={pane} items={trashActionItems}/>
       </div>
       {!isEmpty(items) &&
         <FilesArea drive={drive} items={items} pane="trash" navigate={navigate}/>}

@@ -97,11 +97,11 @@ export default function ActionBar (props) {
   const {className, drive, pane, items, exportAction} = props
   return(
     <ActionBarElement className={className} drive={drive} pane={pane}>
-      {!isEmpty(items) &&
+      {!isEmpty(items) && pane != "trash" &&
        <ExportOption drive={drive} pane={pane} action={exportAction}/>}
-      {(!isEmpty(items)) &&
+      {!isEmpty(items) && 
        <ToggleTrash drive={drive} pane={pane} items={items}/>}
-      {(!isEmpty(items)) &&
+      {!isEmpty(items) && pane != "trash" &&
        <ToggleFavorite drive={drive} pane={pane} items={items}/>}
     </ActionBarElement>
   )
