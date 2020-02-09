@@ -170,7 +170,8 @@ export default function App (props) {
       {signIn && <Landing />}
       {signOut && <AppPage/>}
      </div>
-     <Footer/>
+     {false &&
+      <Footer/>}
    </div>
   )
 }
