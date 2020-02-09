@@ -119,6 +119,19 @@ function useConfig () {
 
 }
 
+function OpenSourceBanner ({placement}) {
+  // using github-fork-ribbon-css
+  const content = "Fork me on GitHub"
+  const href = "https://github.com/REBL-Stack/REBL-drive"
+  return (
+  <a className={["github-fork-ribbon", (placement || "left-top")].join(" ")}
+      href={href}
+      data-ribbon={content}
+      title={content}>
+     {content}
+  </a>)
+}
+
 function AppPage () {
   const { userData, person, signIn, signOut } = useBlockstack()
   const [drive, dispatch] = useDrive()
@@ -130,12 +143,7 @@ function AppPage () {
   useConfig()
   return(
   <>
-    <a className="github-fork-ribbon left-top"
-        href="https://github.com/REBL-Stack/REBL-drive"
-        data-ribbon="Fork me on GitHub"
-        title="Fork me on GitHub">
-       Fork me on GitHub
-   </a>
+   <OpenSourceBanner placement="dark left-bottom"/>
    <Row className="no-gutters">
     <ColAuto>
       <AppSidebar drive={drive}/>

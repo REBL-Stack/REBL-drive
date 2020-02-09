@@ -19,13 +19,25 @@ $font-family-sans-serif: 'Helvetica', 'Arial', sans-serif !default;
 }
 
 .Sidebar {
-    padding-top: 12em;
+    padding-top: 5em;
 }
 
 .Sidebar .list-group-item-action:not(.disabled):not(:hover){
   color: white;
 }
 
-.github-fork-ribbon::before {
-  background-color: none;
+.Sidebar .list-group {
+  margin-right: 1em;
+}
+
+.Sidebar ul .list-group-item {
+  border-color: transparent;
+  border-top-right-radius: 1.5em;
+  border-bottom-right-radius: 1.5em;
+  line-height: 2em;
+  margin-bottom: 2px;
+}
+
+.Sidebar .btn-lg {
+  border-radius: 1.5em !important;
 }

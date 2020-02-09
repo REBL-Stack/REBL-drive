@@ -120,3 +120,20 @@ table.table a:not([href]) {
 .ActionSelector .dropdown-menu {
   min-height: 4em;
 }
+
+/* Fork banner */
+
+.github-fork-ribbon::before {
+  background-color: none;
+}
+
+.github-fork-ribbon.dark:before {
+   background-color: var(--dark);
+}
+
+.github-fork-ribbon {
+  opacity: 0.4;
+  transform: scale(0.5);
+  transform-origin: bottom left;
+  position: fixed;
+}
