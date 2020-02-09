@@ -21,15 +21,19 @@ function FileRow ({dir, name, item, favorite, selected, onClick}) {
   return (
     <tr className={["FileRow", selected ? "table-active" : null].join(" ")}
         onClick={onClick}>
-      <td>
+      <td className="">
         <span className="item-icon">
           <FontAwesomeIcon className="text-secondary" icon={faFile}/>
         </span>
         <a href={url} target="_blank" rel="noopener noreferrer">{name}</a>
         <FavoriteMarker hidden={!favorite}/>
       </td>
-      <td>{date && date.toLocaleDateString(undefined, dateOptions)}</td>
-      <td>{size && filesize(size, {round: 1})}</td>
+      <td style={{width:"1px", whiteSpace:"nowrap"}}>
+        {date && date.toLocaleDateString(undefined, dateOptions)}
+      </td>
+      <td style={{width:"1px", whiteSpace:"nowrap"}}>
+        {size && filesize(size, {round: 1})}
+      </td>
     </tr> )
 }
 

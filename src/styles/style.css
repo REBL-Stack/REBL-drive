@@ -95,7 +95,8 @@ main .pane-heading h4 {
 /* pane area */
 
 main .FavoriteMarker {
-  color: var(--yellow);
+  color: var(--orange);
+  opacity: 0.9;
 }
 
 main table .FavoriteMarker {
