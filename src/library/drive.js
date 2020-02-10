@@ -187,7 +187,7 @@ function useCollectionAtom (drive, label) {
   const saveCollection = useCallback(debounce((collection) => {
     if (setFile) {
       setFile(JSON.stringify(collection))
-  }},[setFile]))
+  }}, 3000), [setFile])
   useEffect( () => {
     saveCollection(collection)
   },[collection])
