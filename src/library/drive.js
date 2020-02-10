@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
-import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, isEqual, map, filter } from 'lodash'
+import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, isEqual,
+            map, filter, debounce } from 'lodash'
 import { Atom, swap, useAtom, deref} from "@dbeining/react-atom"
 
 class DriveItem {
@@ -177,6 +178,19 @@ function internCollectionAtom (drive, label) {
 function useCollectionAtom (drive, label) {
   const atom = internCollectionAtom(drive, label)
   const [collection, setCollection] = useStateAtom(atom)
+  const [file, setFile] = useFile("drive-" + label)
+  useEffect(() => {
+    if (file) {
+      setCollection( collection => JSON.parse(file))
+    }
+  }, [file])
+  const saveCollection = useCallback(debounce((collection) => {
+    if (setFile) {
+      setFile(JSON.stringify(collection))
+  }},[setFile]))
+  useEffect( () => {
+    saveCollection(collection)
+  },[collection])
   return [collection, setCollection]
 }
 
