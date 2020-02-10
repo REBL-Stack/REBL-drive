@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useBlockstack, useFilesList, useFileUrl, useFile, useFetch } from 'react-blockstack'
 import {fromEvent} from 'file-selector'
 import _, { isNull, isNil, isEmpty, concat, get, set, merge, isFunction, isEqual,
@@ -175,22 +175,34 @@ function internCollectionAtom (drive, label) {
   return(atom)
 }
 
-function useCollectionAtom (drive, label) {
-  const atom = internCollectionAtom(drive, label)
+function usePersistAtom (atom, path) {
+  // Incomplete, almost works but need to avoid bouncing
   const [collection, setCollection] = useStateAtom(atom)
-  const [file, setFile] = useFile("drive-" + label)
+  const [file, setFile] = useFile()
   useEffect(() => {
-    if (file) {
+    if (!isNil(file)) {
       setCollection( collection => JSON.parse(file))
     }
   }, [file])
+  const ref = useRef()
+  useEffect(() => {
+    ref.current = {setFile}
+  }, [ref, setFile])
   const saveCollection = useCallback(debounce((collection) => {
-    if (setFile) {
-      setFile(JSON.stringify(collection))
-  }}, 3000), [setFile])
+    // Avoids concurrent setFile attempts
+    if (ref.current && ref.current.setFile) {
+      ref.current.setFile(JSON.stringify(collection))
+    }
+  }, 3000), [ref])
   useEffect( () => {
     saveCollection(collection)
   },[collection])
+}
+
+function useCollectionAtom (drive, label) {
+  const atom = internCollectionAtom(drive, label)
+  const [collection, setCollection] = useStateAtom(atom)
+  // usePersistAtom(atom, "drive-" + label)
   return [collection, setCollection]
 }
 
