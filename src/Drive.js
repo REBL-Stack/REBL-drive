@@ -28,23 +28,12 @@ export function Favorites ({drive, navigate}) {
   return (
     <>
       <div className="pane-heading d-flex justify-content-between">
-        <h4>Favorites</h4>
+        <Breadcrumb title="Favorites" trail={[]} onClick={navigate}/>
         <ActionBar className="mr-4" drive={drive} pane={pane}
            items={chosenItems} exportAction={exportAction}/>
       </div>
       {!isEmpty(items) &&
        <FilesTable drive={drive} items={items} pane="favorites" navigate={navigate}/>}
-    </>)
-}
-
-export function Shared ({drive, navigate}) {
-  const [items] = useShared(drive)
-  return (
-    <>
-      <div className="pane-heading">
-        <h4>Shared</h4>
-      </div>
-      <FilesTable drive={drive} items={items} pane="shared"  navigate={navigate}/>
     </>)
 }
 

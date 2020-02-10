@@ -8,7 +8,8 @@ import { useFavorites, useTrash } from "./library/drive"
 import Sidebar, {Menu, MenuItem, Navbar, Row, Col, ColAuto} from "./library/Sidebar"
 import { useDrive } from './library/drive'
 import Landing from './Landing'
-import Drive, {Favorites, Shared} from './Drive'
+import Drive, {Favorites} from './Drive'
+import SharedPane from './SharedPane'
 import Trash from './Trash'
 import Auth from './Auth'
 import ActionSelector from './ActionSelector'
@@ -159,7 +160,7 @@ function AppPage () {
             <Route path="/home" render={(props) => <Landing />}/>
             <Route path="/drive" render={(props) => <Drive drive={drive} navigate={navigate}/>}/>
             <Route path="/favorites" render={(props) => <Favorites drive={drive} navigate={navigate}/>}/>
-            <Route path="/shared" render={(props) => <Shared drive={drive} navigate={navigate}/>}/>
+            <Route path="/shared" render={(props) => <SharedPane drive={drive} navigate={navigate}/>}/>
             <Route path="/trash" render={(props) => <Trash drive={drive} navigate={navigate}/>}/>
             <Redirect exact from="/" to="/drive" />
           </Switch>

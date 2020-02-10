@@ -5,10 +5,12 @@ import { isEmpty, drop, intersection } from 'lodash'
 import filesize from 'filesize'
 import { useFiles, useFavorites, useFavorite, useSelection, useShared, useTrash, groupFiles,
          useDriveItems, useDriveItem, useCurrent, useFileMeta, useDirectoryMeta, useDriveBranch } from "./library/drive"
+import Breadcrumb from "./library/Breadcrumb"
 import ActionBar from './ActionBar'
 import FilesArea from './Table'
 
-export default function Trash ({drive, navigate}) {
+
+export default function TrashPane ({drive, navigate}) {
   const pane = "trash"
   const [trashed] = useTrash(drive)
   const items = useDriveItems(drive, trashed)
@@ -18,7 +20,7 @@ export default function Trash ({drive, navigate}) {
   return (
     <>
       <div className="pane-heading d-flex justify-content-between">
-        <h4>Trash</h4>
+        <Breadcrumb title="Trash" trail={[]} onClick={navigate}/>
         <ActionBar className="mr-4" drive={drive} pane={pane} items={trashActionItems}/>
       </div>
       {!isEmpty(items) &&
