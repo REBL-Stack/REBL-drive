@@ -36,7 +36,7 @@ function LandingDrive (props) {
       <div className="alert alert-dark text-center m-5">
         <FontAwesomeIcon className="my-3" icon={faCloud}
             style={{fontSize: "6em", opacity: "0.3"}}/>
-        <p>Free cloud storage of your files, safely encrypted for&nbsp;your&nbsp;eyes&nbsp;only.</p>
+        <p>Free private online storage of your files, safely encrypted for&nbsp;your&nbsp;eyes&nbsp;only.</p>
       </div>
       {(signIn || !signOut) &&
       <div className="lead text-center mt-2">

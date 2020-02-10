@@ -22,8 +22,6 @@ const app = configuration.kind
 function Footer (props) {
   return (
   <footer className="text-center bg-dark text-light py-5">
-    {app == 'vault' &&
-     <p>Learn more about encryption with the <a href="https://dcrypt.app"><i>d</i>Crypt</a> app.</p> }
     <p className="m-0 mt-2">
       Made with <FontAwesomeIcon icon={faHeart}/> in San Francisco</p>
     { app == "vault" &&
@@ -106,6 +104,14 @@ function AppSidebar ({drive}) {
         <FontAwesomeIcon icon={faTrash}/>Trash
       </MenuItem>
     </Menu>
+    <footer className="position-absolute w-100 pl-2 pb-2 pr-3 text-muted text-right"
+            style={{bottom: 0}}>
+      <small className="text-center">
+        <a href="mailto:hello@rebl.run" title="Email us at hello@rebl.run">
+          REBL Alliance &middot; 2020
+        </a>
+      </small>
+    </footer>
   </Sidebar>)
 }
 
@@ -123,7 +129,7 @@ function useConfig () {
 
 function OpenSourceBanner ({placement}) {
   // using github-fork-ribbon-css
-  const content = "Fork me on GitHub"
+  const content = "Free & Open Source"
   const href = "https://github.com/REBL-Stack/REBL-drive"
   return (
   <a className={["github-fork-ribbon", (placement || "left-top")].join(" ")}

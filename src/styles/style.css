@@ -92,7 +92,13 @@ main .pane-heading h4 {
   color: gray;
 }
 
-/* pane area */
+/* SIDEBAR */
+
+.Sidebar footer {
+
+}
+
+/* PANES */
 
 main .FavoriteMarker {
   color: var(--orange);
@@ -129,12 +135,12 @@ table.table a:not([href]) {
 }
 
 .github-fork-ribbon.dark:before {
-   background-color: var(--dark);
+   background-color: var(--primary);
 }
 
 .github-fork-ribbon {
   opacity: 0.4;
-  transform: scale(0.5);
+  transform: scale(0.667);
   transform-origin: bottom left;
   position: fixed;
 }
